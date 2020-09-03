@@ -1,31 +1,17 @@
 package sb.domain;
 
-public class Product {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-    private int id;
+import javax.persistence.*;
+
+@Entity
+@Table(name="products")
+@Getter
+@Setter
+@ToString
+public class Product extends BaseEntity {
+
     private String name;
-
-    public Product() {
-    }
-
-    public Product(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

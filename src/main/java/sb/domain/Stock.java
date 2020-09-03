@@ -1,31 +1,17 @@
 package sb.domain;
 
-public class Stock {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-    private int id;
+import javax.persistence.*;
+
+@Entity
+@Table(name="stocks")
+@Getter
+@Setter
+@ToString
+public class Stock extends BaseEntity {
+
     private int quantity;
-
-    public Stock() {
-    }
-
-    public Stock(int id, int quantity) {
-        this.id = id;
-        this.quantity = quantity;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }
