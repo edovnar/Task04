@@ -1,27 +1,32 @@
 package sb;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sb.domain.Order;
+import sb.domain.User;
+import sb.persistence.dao.OrderDAO;
+import sb.persistence.dao.UserDAO;
+
 
 @SpringBootApplication
 @RestController
-public class Application extends SpringBootServletInitializer {
+public class Application {
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Application.class);
-    }
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private OrderDAO orderDAO;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @RequestMapping("/")
-    public String hello(){
-        return "say hello pls";
+    public Order hello(){
+        return orderDAO.get(2);
     }
 }
