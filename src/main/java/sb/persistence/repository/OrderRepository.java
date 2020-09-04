@@ -13,6 +13,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query(OrderQuery.GET_BY_STATUS)
-    List<Order> getByStatus(@Param("status") boolean status);
-
+    List<Order> getByStatus(@Param("status") String status);
 }

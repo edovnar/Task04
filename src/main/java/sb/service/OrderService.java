@@ -16,7 +16,11 @@ public class OrderService extends GeneralService<Order> {
         this.orderRepository = orderRepository;
     }
 
-    public List<Order> getByStatus(boolean status){
+    public List<Order> getByStatus(String status){
+
+        if(status == null){
+            return jpaRepo.findAll();
+        }
         return orderRepository.getByStatus(status);
     }
 }

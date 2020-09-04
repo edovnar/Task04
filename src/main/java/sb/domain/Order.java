@@ -13,7 +13,7 @@ import java.sql.Date;
 @ToString
 public class Order extends BaseEntity {
 
-    private boolean shipped;
+    private String shipped;
     private int submittedBy;
     private Date submittedAt;
 
