@@ -12,7 +12,7 @@ public class UserService extends GeneralService<User> {
         super(userRepository);
     }
 
-    public void updateStatus(Integer id, String status){
+    public void updateStatus(Integer id, boolean status){
         jpaRepo.findById(id)
                 .orElseThrow(UserNotFoundException::new)
                 .setStatus(status);

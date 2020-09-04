@@ -18,7 +18,7 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping()
-    public List<Order> getAllByStatus(@Param("status") boolean status){
-        return orderService.getAllByStatus(status);
+    public List<Order> getByStatus(@Param("status") boolean status){
+        return orderService.getByStatus(status);
     }
 }

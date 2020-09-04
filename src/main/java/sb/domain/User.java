@@ -1,6 +1,5 @@
 package sb.domain;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +13,6 @@ public class User extends BaseEntity {
 
     private String name;
     private String password;
-    private String status;
+    private boolean status;
     private String email;
 }

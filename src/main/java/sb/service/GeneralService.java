@@ -12,7 +12,6 @@ public class GeneralService<E> {
         this.jpaRepo = jpaRepo;
     }
 
-
     public List<E> getAll(){ return jpaRepo.findAll(); }
 
     public E getById(Integer id){
@@ -30,4 +29,6 @@ public class GeneralService<E> {
     public void deleteById(Integer id){
         jpaRepo.deleteById(id);
     }
+
+
 }

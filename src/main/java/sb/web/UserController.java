@@ -19,7 +19,7 @@ public class UserController {
 
     @PatchMapping(value = {"id"})
     public void changeStatus(@PathVariable int id){
-        userService.getById(id).setStatus("admin");
+        userService.getById(id).setStatus(true);
     }
 
 
