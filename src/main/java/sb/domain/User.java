@@ -1,9 +1,8 @@
 package sb.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import org.dom4j.tree.BaseElement;
 
 import javax.persistence.*;
 
@@ -11,7 +10,6 @@ import javax.persistence.*;
 @Table(name="users")
 @Getter
 @Setter
-@ToString
 public class User extends BaseEntity {
 
     private String name;

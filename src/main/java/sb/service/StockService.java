@@ -1,13 +1,13 @@
 package sb.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sb.domain.Stock;
+import sb.persistence.repository.StockRepository;
 
-@Component
-public class StockService extends Service<Stock> {
+@Service
+public class StockService extends GeneralService<Stock> {
 
-    public StockService(JpaRepository<Stock, Integer> jpaRepo) {
-        super(jpaRepo);
+    public StockService(StockRepository stockRepository) {
+        super(stockRepository);
     }
 }

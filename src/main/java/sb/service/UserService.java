@@ -1,14 +1,20 @@
 package sb.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sb.domain.User;
+import sb.persistence.repository.UserRepository;
+import sb.service.exception.UserNotFoundException;
 
-@Component
-public class UserService extends Service<User> {
+@Service
+public class UserService extends GeneralService<User> {
 
-    public UserService(JpaRepository<User, Integer> jpaRepo) {
-        super(jpaRepo);
+    public UserService(UserRepository userRepository) {
+        super(userRepository);
+    }
+
+    public void updateStatus(Integer id, String status){
+        jpaRepo.findById(id)
+                .orElseThrow(UserNotFoundException::new)
+                .setStatus(status);
     }
 }

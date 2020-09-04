@@ -1,7 +1,7 @@
 package sb.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import sb.domain.Product;
+import sb.domain.Stock;
 
-public interface ProductRepo extends JpaRepository<Product, Integer> {
+public interface StockRepository extends JpaRepository<Stock, Integer> {
 }

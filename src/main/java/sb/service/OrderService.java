@@ -1,13 +1,24 @@
 package sb.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sb.domain.Order;
+import sb.persistence.repository.OrderRepository;
 
-@Component
-public class OrderService extends Service<Order> {
+import java.awt.print.Pageable;
+import java.util.List;
 
-    public OrderService(JpaRepository<Order, Integer> jpaRepo) {
-        super(jpaRepo);
+@Service
+public class OrderService extends GeneralService<Order> {
+
+    private OrderRepository orderRepository;
+
+    public OrderService(OrderRepository orderRepository) {
+        super(orderRepository);
+        this.orderRepository = orderRepository;
     }
+
+    public List<Order> getAllByStatus(boolean status){
+        return orderRepository.getByStatus(status);
+    }
+
 }

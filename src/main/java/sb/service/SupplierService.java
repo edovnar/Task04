@@ -1,13 +1,13 @@
 package sb.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sb.domain.Supplier;
+import sb.persistence.repository.SupplierRepository;
 
-@Component
-public class SupplierService extends Service<Supplier> {
+@Service
+public class SupplierService extends GeneralService<Supplier> {
 
-    public SupplierService(JpaRepository<Supplier, Integer> jpaRepo) {
-        super(jpaRepo);
+    public SupplierService(SupplierRepository supplierRepository) {
+        super(supplierRepository);
     }
 }

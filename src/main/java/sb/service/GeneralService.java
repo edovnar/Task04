@@ -3,22 +3,20 @@ package sb.service;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-public class Service<E> {
+public class GeneralService<E> {
 
-    JpaRepository<E, Integer> jpaRepo;
+    protected JpaRepository<E, Integer> jpaRepo;
 
-    public Service(JpaRepository<E, Integer> jpaRepo){
+    public GeneralService(JpaRepository<E, Integer> jpaRepo){
         this.jpaRepo = jpaRepo;
     }
 
-    public List<E> getAll(){
-        return jpaRepo.findAll();
-    };
 
-    public Optional<E> getById(Integer id){
-        return jpaRepo.findById(id);
+    public List<E> getAll(){ return jpaRepo.findAll(); }
+
+    public E getById(Integer id){
+        return (E) jpaRepo.findById(id);
     }
 
     public void save(E entity){
