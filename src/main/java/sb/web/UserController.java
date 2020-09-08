@@ -1,9 +1,9 @@
 package sb.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import sb.domain.User;
+import sb.domain.entity.User;
 import sb.service.UserService;
 
 import java.util.List;
@@ -14,6 +14,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ValidatorExample validatorExample;
 
     @GetMapping
     public List<User> getAll() {
@@ -30,7 +33,11 @@ public class UserController {
     }
 
     @PostMapping
-    public void create(@RequestBody User user) {
+    public void create(@RequestBody User user, BindingResult bindingResult) {
+        validatorExample.validate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            throw new
+        }
         userService.create(user);
     }
 

@@ -1,4 +1,4 @@
-package sb.domain;
+package sb.domain.entity;
 
 import lombok.Data;
 
@@ -6,4 +6,6 @@ import lombok.Data;
 public class Product extends BaseEntity {
 
     private String name;
+    private int supplierId;
+    private int stockId;
 }

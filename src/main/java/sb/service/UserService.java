@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import sb.domain.User;
+import sb.domain.entity.User;
 import sb.persistence.dao.UserDAO;
 
 import java.util.List;
@@ -20,7 +20,6 @@ public class UserService implements UserDetailsService {
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
-
 
     public List<User> getAll(){
         return userDAO.getAll();
@@ -50,7 +49,7 @@ public class UserService implements UserDetailsService {
 
         User user = userDAO.getByName(name)
                 .orElseThrow(
-                        () -> new UsernameNotFoundException("Hello, world!")
+                        () -> new UsernameNotFoundException("No such user")
                 );
 
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(user.getRole());

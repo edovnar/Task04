@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import sb.domain.User;
+import sb.domain.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +35,9 @@ public class UserDAO {
 
     private final String POST = "Insert into users values(:id, :name, :password, :role, :email)";
 
-    private final String DELETE = "Delete from users where id = :id";
+    private final String DELETE = "Update suppliers set userid = null where exists (select * from suppliers where userid = :id) " +
+                                  "and userid = :id; " +
+                                  "Delete from users where id = :id";
 
     public List<User> getAll() {
         return namedJdbcTemplate.query(GET_ALL, rowMapper);

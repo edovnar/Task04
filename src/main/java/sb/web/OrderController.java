@@ -1,10 +1,14 @@
 package sb.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import sb.domain.Order;
+import sb.domain.entity.Order;
+import sb.domain.entity.User;
 import sb.service.OrderService;
+import sb.service.UserService;
+import sb.service.exception.UserNotFoundException;
 
 import java.util.List;
 
@@ -12,12 +16,25 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final UserService userService;
+
+    public OrderController(OrderService orderService, UserService userService) {
+        this.orderService = orderService;
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<Order> getAll(@Param("status") String status) {
-        return orderService.getAll();
+        SecurityContext context = SecurityContextHolder.getContext();
+        User user = userService.getByName(context.getAuthentication().getName())
+                .orElseThrow(UserNotFoundException::new);
+
+        if(user.getRole().equals("admin")){
+            return orderService.getAll();
+        }
+        return orderService.getByUser(user.getId());
+
     }
 
     @GetMapping("/{id}")

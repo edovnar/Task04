@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import sb.domain.Order;
+import sb.domain.entity.Order;
 
 import java.util.Date;
 import java.util.List;
@@ -60,11 +60,11 @@ public class OrderDAO{
        namedJdbcTemplate.update(UPDATE_STATUS, map);
     }
 
-    public void post(int id, int submittedBy) {
+    public void post(Order order) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", id)
+                .addValue("id", order.getId())
                 .addValue("shipped", false)
-                .addValue("submittedBy", submittedBy)
+                .addValue("submittedBy", order.getSubmittedAt())
                 .addValue("submittedAt", new Date())
                 .addValue("updatedAt", null);
        namedJdbcTemplate.update(POST, map);

@@ -1,9 +1,8 @@
 package sb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
-import sb.domain.Order;
+import sb.domain.entity.Order;
 import sb.persistence.dao.OrderDAO;
 
 import java.util.List;
@@ -22,11 +21,12 @@ public class OrderService {
         return orderDAO.get(id);
     }
 
+    public List<Order> getByUser(int id) {
+        return orderDAO.getByUser(id);
+    }
+
     public void save(Order order) {
-        orderDAO.post(
-                order.getId(),
-                order.getSubmittedBy()
-        );
+        orderDAO.post(order);
     }
 
     public void updateStatus(String status, int id) {

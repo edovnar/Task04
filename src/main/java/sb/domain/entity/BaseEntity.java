@@ -1,4 +1,4 @@
-package sb.domain;
+package sb.domain.entity;
 
 import lombok.Data;
 import lombok.Generated;

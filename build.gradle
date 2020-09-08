@@ -25,5 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.3.RELEASE'
+
 
 }
