@@ -1,16 +1,8 @@
 package sb.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name="stocks")
-@Getter
-@Setter
-@ToString
+@Data
 public class Stock extends BaseEntity {
 
     private int quantity;

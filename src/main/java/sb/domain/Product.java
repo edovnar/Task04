@@ -1,16 +1,8 @@
 package sb.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name="products")
-@Getter
-@Setter
-@ToString
+@Data
 public class Product extends BaseEntity {
 
     private String name;

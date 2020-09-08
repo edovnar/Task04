@@ -16,12 +16,28 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public List<Order> get(@Param("status") String status){
-        return orderService.getByStatus(status);
+    public List<Order> getAll(@Param("status") String status) {
+        return orderService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public Order get(@PathVariable("id") int id) {
+        return orderService.get(id);
     }
 
     @PostMapping
     public void create(@RequestBody Order order){
         orderService.save(order);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") int id) {
+        orderService.delete(id);
+    }
+
+    @PatchMapping("/{id}")
+    public void updateStatus(@PathVariable("id") int id,
+                       @Param("status") String status) {
+        orderService.updateStatus(status, id);
     }
 }

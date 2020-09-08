@@ -1,26 +1,39 @@
 package sb.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import sb.domain.Order;
-import sb.persistence.repository.OrderRepository;
+import sb.persistence.dao.OrderDAO;
 
 import java.util.List;
 
 @Service
-public class OrderService extends GeneralService<Order> {
+public class OrderService {
 
-    private OrderRepository orderRepository;
+    @Autowired
+    private OrderDAO orderDAO;
 
-    public OrderService(OrderRepository orderRepository) {
-        super(orderRepository);
-        this.orderRepository = orderRepository;
+    public List<Order> getAll() {
+        return orderDAO.getAll();
     }
 
-    public List<Order> getByStatus(String status){
+    public Order get(int id) {
+        return orderDAO.get(id);
+    }
 
-        if(status == null){
-            return jpaRepo.findAll();
-        }
-        return orderRepository.getByStatus(status);
+    public void save(Order order) {
+        orderDAO.post(
+                order.getId(),
+                order.getSubmittedBy()
+        );
+    }
+
+    public void updateStatus(String status, int id) {
+        orderDAO.update(status, id);
+    }
+
+    public  void delete(int id) {
+        orderDAO.delete(id);
     }
 }

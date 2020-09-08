@@ -1,20 +1,14 @@
 package sb.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
-@Entity
-@Table(name="orders")
-@Getter @Setter
-@ToString
+@Data
 public class Order extends BaseEntity {
 
     private String shipped;
     private int submittedBy;
     private Date submittedAt;
-
+    private Date updatedAt;
 }
