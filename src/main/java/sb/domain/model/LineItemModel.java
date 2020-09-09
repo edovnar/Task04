@@ -8,5 +8,6 @@ import java.util.HashMap;
 @Data
 @AllArgsConstructor
 public class LineItemModel {
+
     private HashMap<String, Integer> productQuantity;
 }

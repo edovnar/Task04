@@ -1,6 +1,5 @@
 package sb.domain.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Product;
 import sb.domain.model.ProductModel;

@@ -15,6 +15,7 @@ public class ProductDAO {
 
     public ProductDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
         this.namedJdbcTemplate = namedJdbcTemplate;
+        rowMapper = new BeanPropertyRowMapper<>(Product.class);
     }
 
     private final String GET = "Select * from products where id = :id";

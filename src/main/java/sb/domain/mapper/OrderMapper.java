@@ -10,21 +10,29 @@ import sb.persistence.dao.UserDAO;
 @Component
 public class OrderMapper {
 
-    private final OrderDAO orderDAO;
-    private final UserDAO userDAO;
-    private final LineItemDAO lineItemDAO;
+    private OrderDAO orderDAO;
+    private UserDAO userDAO;
+    private UserMapper userMapper;
+    private LineItemDAO lineItemDAO;
+    private LineItemMapper lineItemMapper;
 
-    public OrderMapper(OrderDAO orderDAO, UserDAO userDAO, LineItemDAO lineItemDAO) {
+    public OrderMapper(OrderDAO orderDAO, UserDAO userDAO, LineItemDAO lineItemDAO,
+                       UserMapper userMapper, LineItemMapper lineItemMapper) {
         this.orderDAO = orderDAO;
         this.userDAO = userDAO;
         this.lineItemDAO = lineItemDAO;
+        this.userMapper = userMapper;
+        this.lineItemMapper = lineItemMapper;
     }
 
     public OrderModel toModel(Order order) {
         return new OrderModel(
-                order.getId(),
-                userDAO.get(order.getSubmittedBy()),
-                lineItemDAO.getByOrder(order.getId())
-                );
+                userMapper.toModel(
+                        userDAO.get(order.getSubmittedBy())
+                ),
+                lineItemMapper.toModel(
+                        lineItemDAO.getByOrder(order.getId())
+                )
+        );
     }
 }

@@ -1,6 +1,5 @@
 package sb.domain.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sb.domain.entity.LineItem;
 import sb.domain.model.LineItemModel;
@@ -8,6 +7,7 @@ import sb.persistence.dao.LineItemDAO;
 import sb.persistence.dao.ProductDAO;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Component
 public class LineItemMapper {
@@ -21,11 +21,12 @@ public class LineItemMapper {
         this.productDAO = productDAO;
     }
 
-    public LineItemModel toModel(LineItem li) {
+    public LineItemModel toModel(List<LineItem> lineItems) {
         HashMap<String, Integer> productQuantity = new HashMap<>();
-        for(LineItem lineItem : lineItemDAO.getAll()){
-            productQuantity.put(productDAO.get(lineItem.getProductId()).getName(),
-                                lineItem.getQuantity());
+        for(LineItem lineItem : lineItems){
+            productQuantity.put(
+                    productDAO.get(lineItem.getProductId()).getName(),
+                    lineItem.getQuantity());
         }
         return new LineItemModel(productQuantity);
     }
