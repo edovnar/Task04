@@ -10,8 +10,11 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderDAO orderDAO;
+    private final OrderDAO orderDAO;
+
+    public OrderService(OrderDAO orderDAO) {
+        this.orderDAO = orderDAO;
+    }
 
     public List<Order> getAll() {
         return orderDAO.getAll();

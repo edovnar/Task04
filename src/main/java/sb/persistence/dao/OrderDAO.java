@@ -3,6 +3,8 @@ package sb.persistence.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import sb.domain.entity.Order;
 
@@ -34,7 +36,7 @@ public class OrderDAO{
     private final String UPDATE_STATUS = "Update orders set shipped = :shipped, updated_at = :updatedAt where id = :id";
 
 
-    public List<Order> getAll(){
+    public List<Order> getAll() {
         return namedJdbcTemplate.query(GET_ALL, rowMapper);
     }
 
@@ -47,7 +49,7 @@ public class OrderDAO{
 
     public List<Order> getByUser(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", id);
+                .addValue("submittedBy", id);
 
         return namedJdbcTemplate.query( GET_BY_USER, map, rowMapper);
     }
@@ -64,10 +66,11 @@ public class OrderDAO{
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", order.getId())
                 .addValue("shipped", false)
-                .addValue("submittedBy", order.getSubmittedAt())
+                .addValue("submittedBy", order.getSubmittedBy())
                 .addValue("submittedAt", new Date())
                 .addValue("updatedAt", null);
-       namedJdbcTemplate.update(POST, map);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedJdbcTemplate.update(POST, map);
     }
 
     public void delete(int id) {

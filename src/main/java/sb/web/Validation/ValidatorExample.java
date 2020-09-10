@@ -1,4 +1,4 @@
-package sb.web;
+package sb.web.Validation;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;

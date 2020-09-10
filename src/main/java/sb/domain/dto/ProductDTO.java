@@ -1,4 +1,4 @@
-package sb.domain.model;
+package sb.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,10 @@ import sb.domain.entity.Supplier;
 
 @Data
 @AllArgsConstructor
-public class ProductModel {
+public class ProductDTO {
 
+    private int id;
     private String name;
     private Supplier supplier;
-    private Stock stock;
+    private int stockQuantity;
 }

@@ -2,11 +2,9 @@ package sb.domain.mapper;
 
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Stock;
-import sb.domain.model.StockModel;
+import sb.domain.dto.StockDTO;
 import sb.persistence.dao.ProductDAO;
 import sb.persistence.dao.StockDAO;
-
-import java.util.HashMap;
 
 @Component
 public class StockMapper {
@@ -19,12 +17,10 @@ public class StockMapper {
         this.productDAO =productDAO;
     }
 
-    public StockModel toModel() {
-        HashMap<String, Integer> productQuantity = new HashMap<>();
-        for(Stock stock : stockDAO.getAll()){
-            productQuantity.put(productDAO.getByStock(stock.getId()).getName(),
-                    stock.getQuantity());
-        }
-        return new StockModel(productQuantity);
+    public StockDTO toModel(Stock stock) {
+        return new StockDTO(
+                productDAO.getByStock(stock.getId()).getName(),
+                stock.getQuantity()
+        );
     }
 }

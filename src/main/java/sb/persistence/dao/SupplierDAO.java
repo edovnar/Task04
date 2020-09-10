@@ -25,15 +25,21 @@ public class SupplierDAO {
 
     private final String GET = "Select * from suppliers where id = :id";
 
-    private final String GET_BY_NAME = "Select * from suppliers where name = :name";
+    private final String GET_BY_USER = "Select * from suppliers where userid = :userId";
 
     private final String UPDATE = "Update suppliers set name = :name, where id = :id";
 
     private final String POST = "Insert into suppliers values(:id, :userid, :name, :addres, :payernumber," +
             " :registrationcertificatenumber, :reqistrationdate, :phonenumber)";
 
+    private final String DELETE = "Update products set supplierid=null where exists " +
+                                    "(select * from products where supplierid = :id) " +
+                                    "and supplierid = :id; " +
+                                    "Delete from suppliers where id = :id";
+
 
     public List<Supplier> getAll() {
+
         return namedJdbcTemplate.query(GET_ALL, rowMapper);
     }
 
@@ -44,11 +50,11 @@ public class SupplierDAO {
         return namedJdbcTemplate.queryForObject(GET, map, rowMapper);
     }
 
-    public Optional<Supplier> getByName(String name) {
+    public List<Supplier> getByUser(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("name", name);
+                .addValue("userId", id);
 
-        return Optional.ofNullable(namedJdbcTemplate.queryForObject(GET_BY_NAME, map, rowMapper));
+        return namedJdbcTemplate.query(GET_BY_USER, map, rowMapper);
     }
 
     public void update(Supplier supplier) {
@@ -67,5 +73,12 @@ public class SupplierDAO {
                 .addValue("id", supplier.getId())
                 .addValue("name", supplier.getName());
         namedJdbcTemplate.update(POST, map);
+    }
+
+    public void delete(int id) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", id);
+
+        namedJdbcTemplate.update(DELETE, map);
     }
 }

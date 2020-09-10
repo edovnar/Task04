@@ -8,6 +8,5 @@ import org.springframework.data.annotation.Id;
 public class BaseEntity {
 
     @Id
-    @Generated
     private int id;
 }

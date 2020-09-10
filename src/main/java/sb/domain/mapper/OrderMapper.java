@@ -2,10 +2,14 @@ package sb.domain.mapper;
 
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Order;
-import sb.domain.model.OrderModel;
+import sb.domain.dto.OrderDTO;
 import sb.persistence.dao.LineItemDAO;
 import sb.persistence.dao.OrderDAO;
 import sb.persistence.dao.UserDAO;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
@@ -25,14 +29,23 @@ public class OrderMapper {
         this.lineItemMapper = lineItemMapper;
     }
 
-    public OrderModel toModel(Order order) {
-        return new OrderModel(
+    public OrderDTO toModel(Order order) {
+        return new OrderDTO(
+                order.getId(),
                 userMapper.toModel(
                         userDAO.get(order.getSubmittedBy())
                 ),
-                lineItemMapper.toModel(
+                lineItemMapper.allToModel(
                         lineItemDAO.getByOrder(order.getId())
                 )
         );
+    }
+
+    public List<OrderDTO> allToModel(List<Order> orders) {
+        List<OrderDTO> o = new ArrayList<>();
+        for (Order order : orders) {
+            o.add(toModel(order));
+        }
+        return o;
     }
 }

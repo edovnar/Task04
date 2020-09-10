@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.Order;
 import sb.domain.entity.User;
 import sb.domain.mapper.OrderMapper;
-import sb.domain.model.OrderModel;
+import sb.domain.dto.OrderDTO;
 import sb.service.OrderService;
 import sb.service.UserService;
 import sb.service.exception.UserNotFoundException;
@@ -30,23 +30,19 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderModel> getAll(@Param("status") String status) {
+    public List<OrderDTO> getAll(@Param("status") String status) {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = userService.getByName(context.getAuthentication().getName())
                 .orElseThrow(UserNotFoundException::new);
 
         if(user.getRole().equals("admin")){
-            return orderService.getAll().stream()
-                    .map((orderMapper::toModel))
-                    .collect(Collectors.toList());
+            return orderMapper.allToModel(orderService.getAll());
         }
-        return orderService.getByUser(user.getId()).stream()
-                .map((orderMapper::toModel))
-                .collect(Collectors.toList());
+        return orderMapper.allToModel(orderService.getByUser(user.getId()));
     }
 
     @GetMapping("/{id}")
-    public OrderModel get(@PathVariable("id") int id) {
+    public OrderDTO get(@PathVariable("id") int id) {
         return orderMapper.toModel(orderService.get(id));
     }
 

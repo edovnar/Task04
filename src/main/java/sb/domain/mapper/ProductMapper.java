@@ -2,7 +2,7 @@ package sb.domain.mapper;
 
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Product;
-import sb.domain.model.ProductModel;
+import sb.domain.dto.ProductDTO;
 import sb.persistence.dao.StockDAO;
 import sb.persistence.dao.SupplierDAO;
 
@@ -17,9 +17,12 @@ public class ProductMapper {
         this.stockDAO = stockDAO;
     }
 
-    public ProductModel toModel(Product product) {
-        return new ProductModel(product.getName(),
+    public ProductDTO toModel(Product product) {
+        return new ProductDTO(
+                product.getId(),
+                product.getName(),
                 supplierDAO.get(product.getSupplierId()),
-                stockDAO.get(product.getStockId()));
+                stockDAO.get(product.getStockId()).getQuantity()
+        );
     }
 }

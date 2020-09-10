@@ -2,7 +2,7 @@ package sb.domain.mapper;
 
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Supplier;
-import sb.domain.model.SupplierModel;
+import sb.domain.dto.SupplierDTO;
 import sb.persistence.dao.UserDAO;
 
 @Component
@@ -14,11 +14,13 @@ public class SupplierMapper {
         this.userDAO = userDAO;
     }
 
-    public SupplierModel toModel(Supplier supplier) {
-        return new SupplierModel(userDAO.get(supplier.getUserId()),
+    public SupplierDTO toModel(Supplier supplier) {
+        return new SupplierDTO(
+                userDAO.get(supplier.getUserId()).getName(),
                 supplier.getName(),
                 supplier.getAddress(),
                 supplier.getRegistrationDate(),
-                supplier.getPhoneNumber());
+                supplier.getPhoneNumber()
+        );
     }
 }

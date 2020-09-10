@@ -1,16 +1,15 @@
-package sb.domain.model;
+package sb.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sb.domain.entity.User;
 
 import java.sql.Date;
 
 @Data
 @AllArgsConstructor
-public class SupplierModel {
+public class SupplierDTO {
 
-    private User user;
+    private String userName;
     private String name;
     private String address;
     private Date registrationDate;
