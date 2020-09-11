@@ -30,26 +30,26 @@ public class UserDAO {
         rowMapper = new BeanPropertyRowMapper<>(User.class);
     }
 
-    private final String GET_ALL = "select * from users ";
+    private final String SQL_SELECT_ALL = "select * from users ";
 
-    private final String GET = "select * from users where id = :id";
+    private final String SQL_SELECT_BY_ID = "select * from users where id = :id";
 
-    private final String GET_BY_NAME = "select * from users where name = :name";
+    private final String SQL_SELECT_BY_NAME = "select * from users where name = :name";
 
     private final String SQL_SELECT_BY_EMAIL = "select * from users where email = :email";
 
-    private final String UPDATE_ROLE = "update users set role = :role where id = :id";
+    private final String SQL_UPDATE_ROLE_BY_ID = "update users set role = :role where id = :id";
 
-    private final String UPDATE = "update users set name = :name, password = :password, email = :email where id = :id";
+    private final String SQL_UPDATE_ID = "update users set name = :name, password = :password, email = :email where id = :id";
 
-    private final String POST = "insert into users(name, password, role, email) values(:name, :password, :role, :email)";
+    private final String SQL_POST = "insert into users(name, password, role, email) values(:name, :password, :role, :email)";
 
-    private final String DELETE = "update suppliers set userid = null where exists (select * from suppliers where userid = :id) " +
-                                  "and userid = :id; " +
-                                  "Delete from users where id = :id";
+    private final String SQL_DELETE_BY_ID = "update suppliers set userid = null where exists (select * from suppliers where userid = :id) " +
+                                            "and userid = :id; " +
+                                            "Delete from users where id = :id";
 
     public List<User> getAll() {
-        return namedJdbcTemplate.query(GET_ALL, rowMapper);
+        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
     public User get(int id) {
@@ -58,7 +58,7 @@ public class UserDAO {
 
         User user = null;
         try {
-            user = namedJdbcTemplate.queryForObject(GET, map, rowMapper);
+            user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
         } catch (EmptyResultDataAccessException ignored) {
             throw new UserNotFoundException("No such user");
         }
@@ -72,7 +72,7 @@ public class UserDAO {
                 .addValue("name", name);
         User user = null;
         try {
-            user = namedJdbcTemplate.queryForObject(GET_BY_NAME, map, rowMapper);
+            user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, map, rowMapper);
         } catch (DataAccessException ignored) { }
 
         return Optional.ofNullable(user);
@@ -94,7 +94,7 @@ public class UserDAO {
                 .addValue("role", role)
                 .addValue("id", id);
 
-        namedJdbcTemplate.update(UPDATE_ROLE, map);
+        namedJdbcTemplate.update(SQL_UPDATE_ROLE_BY_ID, map);
     }
 
     public void update(User user) {
@@ -103,7 +103,7 @@ public class UserDAO {
                 .addValue("password", user.getPassword())
                 .addValue("email", user.getEmail())
                 .addValue("id", user.getId());
-        namedJdbcTemplate.update(UPDATE, map);
+        namedJdbcTemplate.update(SQL_UPDATE_ID, map);
     }
 
     public void post(User user) {
@@ -114,13 +114,13 @@ public class UserDAO {
                 .addValue("email", user.getEmail());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
+        namedJdbcTemplate.update(SQL_POST, map, keyHolder, new String[]{"id"});
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
-        namedJdbcTemplate.update(DELETE, map);
+        namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
     }
 }

@@ -41,15 +41,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
 //                .authorizeRequests()
 //                .antMatchers("/users/**").hasAuthority("admin")
 //                .antMatchers("/suppliers/**").hasAuthority("admin")
 //                .antMatchers(HttpMethod.GET, "/suppliers/**").authenticated()
 //                .antMatchers(HttpMethod.GET, "/products/**").permitAll()
 //                .and()
-//                .httpBasic();
+               .httpBasic();
     }
 
     @Bean

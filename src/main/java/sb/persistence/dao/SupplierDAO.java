@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import sb.domain.entity.Supplier;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class SupplierDAO {
@@ -23,47 +22,46 @@ public class SupplierDAO {
         rowMapper = new BeanPropertyRowMapper<>(Supplier.class);
     }
 
-    private final String GET_ALL = "Select * from suppliers ";
+    private final String SQL_SELECT_ALL = "Select * from suppliers ";
 
-    private final String GET = "Select * from suppliers where id = :id";
+    private final String SQL_SELECT_BY_ID = "Select * from suppliers where id = :id";
 
-    private final String GET_BY_USER = "Select * from suppliers where userid = :userId";
+    private final String SQL_SELECT_BY_USERID = "Select * from suppliers where userid = :userId";
 
-    private final String UPDATE = "Update suppliers set name = :name, where id = :id";
+    private final String SQL_UPDATE_BY_ID = "Update suppliers set name = :name, where id = :id";
 
-    private final String POST = "Insert into suppliers(userid, name, addres, payernumber, registrationcertificatenumber, :reqistrationdate, :phonenumber) " +
+    private final String POST = "Insert into suppliers(userid, name, addres, payernumber, registrationcertificatenumber, reqistrationdate, phonenumber) " +
             "values(:userid, :name, :addres, :payernumber, :registrationcertificatenumber, :reqistrationdate, :phonenumber)";
 
-    private final String DELETE = "Update products set supplierid=null where exists " +
-                                    "(select * from products where supplierid = :id) " +
-                                    "and supplierid = :id; " +
-                                    "Delete from suppliers where id = :id";
+    private final String SQL_DELETE_BY_ID = "Update products set supplierid=null where exists " +
+                                            "(select * from products where supplierid = :id) " +
+                                            "and supplierid = :id; " + "Delete from suppliers where id = :id";
 
 
     public List<Supplier> getAll() {
 
-        return namedJdbcTemplate.query(GET_ALL, rowMapper);
+        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
     public Supplier get(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        return namedJdbcTemplate.queryForObject(GET, map, rowMapper);
+        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
     }
 
     public List<Supplier> getByUser(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("userId", id);
 
-        return namedJdbcTemplate.query(GET_BY_USER, map, rowMapper);
+        return namedJdbcTemplate.query(SQL_SELECT_BY_USERID, map, rowMapper);
     }
 
     public void update(Supplier supplier) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("name", supplier.getName())
                 .addValue("id", supplier.getId());
-        namedJdbcTemplate.update(UPDATE, map);
+        namedJdbcTemplate.update(SQL_UPDATE_BY_ID, map);
     }
 
     public void post(Supplier supplier) {
@@ -81,6 +79,6 @@ public class SupplierDAO {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        namedJdbcTemplate.update(DELETE, map);
+        namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
     }
 }

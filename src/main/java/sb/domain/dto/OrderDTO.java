@@ -11,5 +11,5 @@ public class OrderDTO {
 
     private int id;
     private UserDTO user;
-    private List<LineItemDTO> order;
+    private List<ProductDTO> products;
 }

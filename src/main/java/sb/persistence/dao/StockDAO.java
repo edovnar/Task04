@@ -18,30 +18,30 @@ public class StockDAO {
         rowMapper = new BeanPropertyRowMapper<>(Stock.class);
     }
 
-    private final String GET_ALL = "Select * from stocks ";
+    private final String SQL_SELECT_ALL = "Select * from stocks ";
 
-    private final String GET = "Select * from stocks where id = :id";
+    private final String SQL_SELECT_BY_ID = "Select * from stocks where id = :id";
 
-    private final String UPDATE = "Update stocks set quantity = :quantity where id = :id";
+    private final String SQL_UPDATE_BY_ID = "Update stocks set quantity = :quantity where id = :id";
 
-    private final String POST = "Insert into stocks(:id, :quantity) values(:id, :quantity)";
+    private final String POST = "Insert into stocks(id, quantity) values(:id, :quantity)";
 
     public List<Stock> getAll() {
-        return namedJdbcTemplate.query(GET_ALL, rowMapper);
+        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
     public Stock get(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        return namedJdbcTemplate.queryForObject(GET, map, rowMapper);
+        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
     }
 
     public void update(Stock stock) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("quantity", stock.getQuantity())
                 .addValue("id", stock.getId());
-        namedJdbcTemplate.update(UPDATE, map);
+        namedJdbcTemplate.update(SQL_UPDATE_BY_ID, map);
     }
 
     public void post(Stock stock) {

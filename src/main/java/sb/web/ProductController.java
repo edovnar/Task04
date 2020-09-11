@@ -1,10 +1,13 @@
 package sb.web;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.Product;
 import sb.domain.mapper.ProductMapper;
 import sb.domain.dto.ProductDTO;
 import sb.service.ProductService;
+import sb.service.exception.CreationException;
+import sb.service.exception.UserNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -31,11 +34,16 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductDTO get(@PathVariable("id") int id) {
-        return productMapper.toModel(productService.get(id));
+        return productMapper.toModel(productService.get(id)
+                .orElseThrow(() -> new UserNotFoundException("No such product"))
+        );
     }
 
     @PostMapping
-    public void create(@RequestBody @Valid Product product){
+    public void create(@RequestBody @Valid Product product, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            throw new CreationException(bindingResult);
+        }
         productService.save(product);
     }
 

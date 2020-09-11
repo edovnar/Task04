@@ -1,7 +1,6 @@
 package sb.web;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.User;
@@ -20,12 +19,10 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private UserService userService;
-    private ValidatorExample validatorExample;
     private UserMapper userMapper;
 
-    public UserController(UserService userService, ValidatorExample validatorExample, UserMapper userMapper) {
+    public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
-        this.validatorExample = validatorExample;
         this.userMapper = userMapper;
     }
 

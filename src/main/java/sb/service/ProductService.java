@@ -6,6 +6,7 @@ import sb.domain.entity.Product;
 import sb.persistence.dao.ProductDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -17,7 +18,7 @@ public class ProductService {
         return productDAO.getAll();
     }
 
-    public Product get(int id) {
+    public Optional<Product> get(int id) {
         return productDAO.get(id);
     }
 

@@ -21,15 +21,15 @@ public class LineItemDAO {
         rowMapper = new BeanPropertyRowMapper<>(LineItem.class);
     }
 
-    private final String GET =
+    private final String SQL_SELECT_BY_ORDERID_PRODUCTID =
             "Select * from lineitems where orderid = :orderId " +
                     "and productid = :productId";
 
-    private final String GET_ALL = "select * from lineitems";
+    private final String SQL_SELECT_ALL = "select * from lineitems";
 
-    private final String GET_BY_ORDER = "select * from lineitems where orderid = :orderId";
+    private final String SQL_SELECT_BY_ORDER = "select * from lineitems where orderid = :orderId";
 
-    private final String POST = "insert into lineitems(orderid, productid, quantity) values(:orderid, :productid, quantity)";
+    private final String SQL_INSERT = "insert into lineitems(orderid, productid, quantity) values(:orderid, :productid, quantity)";
 
 
     public List<LineItem> get(int orderId, int productId){
@@ -37,20 +37,22 @@ public class LineItemDAO {
                 .addValue("orderId", orderId)
                 .addValue("productId", productId);
 
-        return namedJdbcTemplate.query(GET, map, rowMapper);
+        return namedJdbcTemplate.query(SQL_SELECT_BY_ORDERID_PRODUCTID, map, rowMapper);
     }
 
-    public List<LineItem> getAll(){
-        return namedJdbcTemplate.query(GET_ALL, rowMapper);
+    public List<LineItem> getAll() {
+        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
 
-    public List<LineItem> getByOrder(int orderId){
+    public List<LineItem> getByOrder(int orderId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("orderId", orderId);
 
-        return namedJdbcTemplate.query(GET_BY_ORDER, map, rowMapper);
+        return namedJdbcTemplate.query(SQL_SELECT_BY_ORDER, map, rowMapper);
     }
+
+//    public List<LineItem> getByProduct
 
     public void post(LineItem lineItem) {
         MapSqlParameterSource map = new MapSqlParameterSource()
@@ -59,6 +61,6 @@ public class LineItemDAO {
                 .addValue("quantity", lineItem.getQuantity());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
+        namedJdbcTemplate.update(SQL_INSERT, map, keyHolder, new String[]{"id"});
     }
 }
