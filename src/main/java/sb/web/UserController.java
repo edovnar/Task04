@@ -1,12 +1,14 @@
 package sb.web;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.User;
 import sb.domain.mapper.UserMapper;
 import sb.domain.dto.UserDTO;
 import sb.service.UserService;
-import sb.service.exception.UserNotFoundException;
+import sb.service.exception.CreationException;
 import sb.web.Validation.ValidatorExample;
 
 import javax.validation.Valid;
@@ -40,16 +42,20 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public void updateStatus(@PathVariable("id") int id){
+    public String updateStatus(@PathVariable("id") int id,
+                               @RequestBody User user) {
+        userService.updateStatus(id, user.getRole());
+        return "Successfully updated";
     }
 
     @PostMapping
-    public void create(@RequestBody @Valid User user, BindingResult bindingResult) {
-        validatorExample.validate(user, bindingResult);
+    @ResponseStatus(HttpStatus.CREATED)
+    public String create(@RequestBody @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new UserNotFoundException();
+            throw new CreationException(bindingResult);
         }
         userService.create(user);
+        return "Created successfully";
     }
 
     @DeleteMapping("/{id}")

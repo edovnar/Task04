@@ -8,6 +8,7 @@ import sb.domain.dto.SupplierDTO;
 import sb.persistence.dao.SupplierDAO;
 import sb.service.SupplierService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class SupplierController {
     }
 
     @PostMapping
-    public void create(@RequestBody Supplier supplier){
+    public void create(@RequestBody @Valid Supplier supplier){
         supplierService.save(supplier);
     }
 

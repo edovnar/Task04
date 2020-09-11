@@ -29,7 +29,7 @@ public class OrderDAO{
     private final String GET_BY_USER = "Select * from orders where submitted_by = :submittedBy";
 
     private final String POST =
-            "Insert into orders values (:id, :shipped, :submittedBy, :submittedAt, :updatedAt)";
+            "Insert into orders(shipped, submitted_by, :submitted_at, :updated_at) values (:shipped, :submittedBy, :submittedAt, :updatedAt)";
 
     private final String DELETE = "Delete from orders where id = :id";
 
@@ -64,11 +64,11 @@ public class OrderDAO{
 
     public void post(Order order) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", order.getId())
                 .addValue("shipped", false)
                 .addValue("submittedBy", order.getSubmittedBy())
                 .addValue("submittedAt", new Date())
                 .addValue("updatedAt", null);
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(POST, map);
     }

@@ -1,12 +1,11 @@
 package sb.domain.entity;
 
 import lombok.Data;
-
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 
 @Data
 public class Stock extends BaseEntity {
 
-    @Min(value = 0, message = "Can not be zero or negative")
+    @Positive (message = "Positive is required")
     private int quantity;
 }

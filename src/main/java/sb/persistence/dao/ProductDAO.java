@@ -3,6 +3,8 @@ package sb.persistence.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import sb.domain.entity.Product;
 
@@ -28,7 +30,7 @@ public class ProductDAO {
 
     private final String GET_BY_STOCK = "Select * from products where stockid = :stockId";
 
-    private final String POST = "Insert into products values (:id, :suppliedId, :stockId, :name)";
+    private final String POST = "Insert into products(:suppliedId, :stockId, :name) values (:suppliedId, :stockId, :name)";
 
     private final String DELETE = "Delete from products where id = :id";
 
@@ -75,11 +77,12 @@ public class ProductDAO {
 
     public void post(Product product) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", product.getId())
                 .addValue("suppliedId", product.getSupplierId())
                 .addValue("stockId", product.getStockId())
                 .addValue("name", product.getName());
-        namedJdbcTemplate.update(POST, map);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
     }
 
     public void delete(int id) {

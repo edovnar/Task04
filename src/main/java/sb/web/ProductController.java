@@ -6,6 +6,7 @@ import sb.domain.mapper.ProductMapper;
 import sb.domain.dto.ProductDTO;
 import sb.service.ProductService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public void create(@RequestBody Product product){
+    public void create(@RequestBody @Valid Product product){
         productService.save(product);
     }
 

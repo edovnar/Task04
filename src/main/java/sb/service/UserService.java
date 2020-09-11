@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import sb.domain.entity.User;
 import sb.persistence.dao.UserDAO;
+import sb.service.exception.CreationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +34,23 @@ public class UserService implements UserDetailsService {
         return userDAO.getByName(name);
     }
 
-    public void updateStatus(String status) {
+    public void updateStatus(int id, String role) {
+        if (role.equals("admin") || role.equals("user")) {
+        userDAO.updateStatus(id, role);
+        } else {
+            throw new CreationException("The role is designed incorrectly");
+        }
     }
 
     public void create(User user) {
-        userDAO.post(user);
+        String role = user.getRole();
+        if (userDAO.getByEmail(user.getEmail()).isEmpty() && user.getEmail()!=null) {
+            if (role.equals("admin") || role.equals("user")) {
+
+                userDAO.post(user);
+
+            } else throw new CreationException("Define the role");
+        } else throw new CreationException("Invalid email (User with this email is already exists or is empty)");
     }
 
     public void delete(int id) {

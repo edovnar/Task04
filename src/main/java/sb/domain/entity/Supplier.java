@@ -18,7 +18,7 @@ public class Supplier extends BaseEntity {
     private String address;
 
     @NotBlank(message = "Payer number is required")
-    @Size(min = 5, max = 15, message = "Number should be between 5 and 15")
+    @Size(min = 5, max = 15, message = "Length should be between 5 and 15")
     private int payerNumber;
 
     private int registrationCertificateNumber;

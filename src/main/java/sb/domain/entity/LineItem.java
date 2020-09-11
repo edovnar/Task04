@@ -1,8 +1,7 @@
 package sb.domain.entity;
 
 import lombok.Data;
-
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 
 @Data
 public class LineItem extends BaseEntity{
@@ -10,6 +9,6 @@ public class LineItem extends BaseEntity{
     private int orderId;
     private int productId;
 
-    @Min(value = 1, message = "Can't be zero or negative")
+    @Positive
     private int quantity;
 }

@@ -9,15 +9,24 @@ import sb.domain.entity.User;
 public class ValidatorExample implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
-        return User.class.equals(clazz);
+        return false;
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        User user = (User) target;
 
-        if(user == null) {
-            errors.reject("User not null");
-        }
     }
+//    @Override
+//    public boolean supports(Class<?> clazz) {
+//        return User.class.equals(clazz);
+//    }
+//
+//    @Override
+//    public void validate(Object target, Errors errors) {
+//        User user = (User) target;
+//
+//        if(user == null) {
+//            errors.reject("User not null");
+//        }
+//    }
 }

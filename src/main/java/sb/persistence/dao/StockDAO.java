@@ -24,7 +24,7 @@ public class StockDAO {
 
     private final String UPDATE = "Update stocks set quantity = :quantity where id = :id";
 
-    private final String POST = "Insert into stocks values(:id, :quantity)";
+    private final String POST = "Insert into stocks(:id, :quantity) values(:id, :quantity)";
 
     public List<Stock> getAll() {
         return namedJdbcTemplate.query(GET_ALL, rowMapper);

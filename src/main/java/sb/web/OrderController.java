@@ -10,10 +10,10 @@ import sb.domain.mapper.OrderMapper;
 import sb.domain.dto.OrderDTO;
 import sb.service.OrderService;
 import sb.service.UserService;
-import sb.service.exception.UserNotFoundException;
+import sb.service.exception.CreationException;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/orders")
@@ -33,7 +33,7 @@ public class OrderController {
     public List<OrderDTO> getAll(@Param("status") String status) {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = userService.getByName(context.getAuthentication().getName())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(()->new CreationException("no user"));
 
         if(user.getRole().equals("admin")){
             return orderMapper.allToModel(orderService.getAll());
@@ -47,7 +47,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public void create(@RequestBody Order order){
+    public void create(@RequestBody @Valid Order order){
         orderService.save(order);
     }
 

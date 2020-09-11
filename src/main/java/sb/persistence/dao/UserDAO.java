@@ -1,11 +1,18 @@
 package sb.persistence.dao;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import sb.domain.entity.User;
+import sb.service.exception.UserNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,19 +30,21 @@ public class UserDAO {
         rowMapper = new BeanPropertyRowMapper<>(User.class);
     }
 
-    private final String GET_ALL = "Select * from users ";
+    private final String GET_ALL = "select * from users ";
 
-    private final String GET = "Select * from users where id = :id";
+    private final String GET = "select * from users where id = :id";
 
-    private final String GET_BY_NAME = "Select * from users where name = :name";
+    private final String GET_BY_NAME = "select * from users where name = :name";
 
-    private final String UPDATE_STATUS = "Update users set status = :status where id = :id";
+    private final String SQL_SELECT_BY_EMAIL = "select * from users where email = :email";
 
-    private final String UPDATE = "Update users set name = :name, password = :password, email = :email where id = :id";
+    private final String UPDATE_ROLE = "update users set role = :role where id = :id";
 
-    private final String POST = "Insert into users values(:id, :name, :password, :role, :email)";
+    private final String UPDATE = "update users set name = :name, password = :password, email = :email where id = :id";
 
-    private final String DELETE = "Update suppliers set userid = null where exists (select * from suppliers where userid = :id) " +
+    private final String POST = "insert into users(name, password, role, email) values(:name, :password, :role, :email)";
+
+    private final String DELETE = "update suppliers set userid = null where exists (select * from suppliers where userid = :id) " +
                                   "and userid = :id; " +
                                   "Delete from users where id = :id";
 
@@ -47,21 +56,45 @@ public class UserDAO {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        return namedJdbcTemplate.queryForObject(GET, map, rowMapper);
+        User user = null;
+        try {
+            user = namedJdbcTemplate.queryForObject(GET, map, rowMapper);
+        } catch (EmptyResultDataAccessException ignored) {
+            throw new UserNotFoundException("No such user");
+        }
+
+       // return Optional.ofNullable(user);
+        return user;
     }
 
     public Optional<User> getByName(String name) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("name", name);
+        User user = null;
+        try {
+            user = namedJdbcTemplate.queryForObject(GET_BY_NAME, map, rowMapper);
+        } catch (DataAccessException ignored) { }
 
-        return Optional.ofNullable(namedJdbcTemplate.queryForObject(GET_BY_NAME, map, rowMapper));
+        return Optional.ofNullable(user);
     }
 
-    public void updateStatus(String status, int id) {
+    public Optional<User> getByEmail(String email) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("status", status)
+                .addValue("email", email);
+        User user = null;
+        try {
+            user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_EMAIL, map, rowMapper);
+        } catch (DataAccessException ignored){}
+
+        return Optional.ofNullable(user);
+    }
+
+    public void updateStatus(int id, String role) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("role", role)
                 .addValue("id", id);
-        namedJdbcTemplate.update(UPDATE_STATUS, map);
+
+        namedJdbcTemplate.update(UPDATE_ROLE, map);
     }
 
     public void update(User user) {
@@ -75,14 +108,16 @@ public class UserDAO {
 
     public void post(User user) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", user.getId())
                 .addValue("name", user.getName())
                 .addValue("password", passwordEncoder.encode(user.getPassword()))
                 .addValue("role", user.getRole())
                 .addValue("email", user.getEmail());
-        namedJdbcTemplate.update(POST, map);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);

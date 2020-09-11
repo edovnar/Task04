@@ -3,6 +3,8 @@ package sb.persistence.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import sb.domain.entity.Supplier;
 
@@ -29,8 +31,8 @@ public class SupplierDAO {
 
     private final String UPDATE = "Update suppliers set name = :name, where id = :id";
 
-    private final String POST = "Insert into suppliers values(:id, :userid, :name, :addres, :payernumber," +
-            " :registrationcertificatenumber, :reqistrationdate, :phonenumber)";
+    private final String POST = "Insert into suppliers(userid, name, addres, payernumber, registrationcertificatenumber, :reqistrationdate, :phonenumber) " +
+            "values(:userid, :name, :addres, :payernumber, :registrationcertificatenumber, :reqistrationdate, :phonenumber)";
 
     private final String DELETE = "Update products set supplierid=null where exists " +
                                     "(select * from products where supplierid = :id) " +
@@ -66,13 +68,13 @@ public class SupplierDAO {
 
     public void post(Supplier supplier) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", supplier.getId())
                 .addValue("name", supplier.getName())
                 .addValue("userid", supplier.getUserId())
                 .addValue("addres", supplier.getAddress())
                 .addValue("id", supplier.getId())
                 .addValue("name", supplier.getName());
-        namedJdbcTemplate.update(POST, map);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
     }
 
     public void delete(int id) {
