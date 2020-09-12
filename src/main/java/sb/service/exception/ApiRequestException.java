@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import sb.domain.entity.LineItem;
 
 @ControllerAdvice
 public class ApiRequestException {
@@ -30,5 +31,10 @@ public class ApiRequestException {
     @ExceptionHandler(value = {UserNotFoundException.class})
     public ResponseEntity<Object> handle (UserNotFoundException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {BadOrderException.class})
+    private ResponseEntity<LineItem> handle (BadOrderException e) {
+        return new ResponseEntity<>(e.getLineItem(), HttpStatus.BAD_REQUEST);
     }
 }

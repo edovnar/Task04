@@ -1,5 +1,6 @@
 package sb.domain.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,9 @@ public class OrderMapper {
     private UserMapper userMapper;
     private LineItemDAO lineItemDAO;
     private LineItemMapper lineItemMapper;
+    @Autowired
+    private ProductMapper productMapper;
+
 
     public OrderMapper(UserService userService, UserDAO userDAO, LineItemDAO lineItemDAO,
                        UserMapper userMapper, LineItemMapper lineItemMapper) {
@@ -41,7 +45,7 @@ public class OrderMapper {
                 userMapper.toModel(
                         userDAO.get(order.getSubmittedBy())
                 ),
-                lineItemMapper.allToModel(
+                productMapper.toModel(
                         lineItemDAO.getByOrder(order.getId())
                 )
         );

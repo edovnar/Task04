@@ -21,8 +21,8 @@ public class ProductMapper {
         return new ProductDTO(
                 product.getId(),
                 product.getName(),
-                supplierDAO.get(product.getSupplierId()),
-                stockDAO.get(product.getStockId()).getQuantity()
+                supplierDAO.get(product.getSupplierId()).getName(),
+                stockDAO.get(product.getId()).getQuantity()
         );
     }
 }

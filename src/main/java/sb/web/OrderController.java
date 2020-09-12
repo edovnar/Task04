@@ -61,11 +61,12 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@RequestBody @Valid List<LineItem> lineItems, BindingResult bindingResult) {
+    public void create(@RequestBody @Valid List<LineItem> lineItems, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CreationException(bindingResult);
         }
-        return orderService.save(lineItems);
+
+        orderService.save(lineItems);
     }
 
     @DeleteMapping("/{id}")
