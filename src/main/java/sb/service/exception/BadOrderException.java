@@ -14,4 +14,9 @@ public class BadOrderException extends RuntimeException {
     public BadOrderException (LineItem lineItem) {
         this.lineItem = lineItem;
     }
+
+    public BadOrderException (LineItem lineItem, String message){
+        super(message);
+        this.lineItem = lineItem;
+    }
 }

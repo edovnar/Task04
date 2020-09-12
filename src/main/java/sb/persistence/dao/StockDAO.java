@@ -1,12 +1,15 @@
 package sb.persistence.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Stock;
+import sb.service.exception.StockNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class StockDAO {
@@ -30,11 +33,15 @@ public class StockDAO {
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
-    public Stock get(int id) {
+    public Optional<Stock> get(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
+        Stock stock = null;
+        try {
+            stock = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
+        } catch (EmptyResultDataAccessException ignored) {}
 
-        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
+        return Optional.ofNullable(stock);
     }
 
     public void update(Stock stock) {

@@ -12,5 +12,4 @@ public class ProductDTO {
     private int id;
     private String name;
     private String supplierName;
-    private int stockQuantity;
 }

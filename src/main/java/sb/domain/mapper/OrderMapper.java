@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import sb.domain.dto.ProductDTO;
+import sb.domain.entity.LineItem;
 import sb.domain.entity.Order;
 import sb.domain.dto.OrderDTO;
+import sb.domain.entity.Product;
 import sb.domain.entity.User;
 import sb.persistence.dao.LineItemDAO;
 import sb.persistence.dao.OrderDAO;
+import sb.persistence.dao.ProductDAO;
 import sb.persistence.dao.UserDAO;
 import sb.service.UserService;
 import sb.service.exception.CreationException;
@@ -28,6 +32,8 @@ public class OrderMapper {
     private LineItemMapper lineItemMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private ProductDAO productDAO;
 
 
     public OrderMapper(UserService userService, UserDAO userDAO, LineItemDAO lineItemDAO,
@@ -40,14 +46,21 @@ public class OrderMapper {
     }
 
     public OrderDTO toModel(Order order) {
+        List<ProductDTO> productDTOs = new ArrayList<>();
+
+        for (LineItem lineItem : lineItemDAO.getByOrder(order.getId())) {
+            Product product = productDAO.get(lineItem.getProductId()).get();
+
+            productDTOs.add(
+                    productMapper.toModel(product)
+            );
+        }
         return new OrderDTO(
                 order.getId(),
                 userMapper.toModel(
                         userDAO.get(order.getSubmittedBy())
                 ),
-                productMapper.toModel(
-                        lineItemDAO.getByOrder(order.getId())
-                )
+                productDTOs
         );
     }
 

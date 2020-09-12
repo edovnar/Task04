@@ -4,15 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import sb.domain.entity.LineItem;
-import sb.domain.entity.Order;
-import sb.domain.entity.Product;
-import sb.domain.entity.User;
+import sb.domain.entity.*;
 import sb.persistence.dao.OrderDAO;
 import sb.persistence.dao.ProductDAO;
 import sb.persistence.dao.StockDAO;
 import sb.persistence.dao.UserDAO;
 import sb.service.exception.BadOrderException;
+import sb.service.exception.StockNotFoundException;
 import sb.service.exception.UserNotFoundException;
 
 import java.util.List;
@@ -50,17 +48,25 @@ public class OrderService {
         User user = userDAO.getByName(context.getAuthentication().getName())
                 .orElseThrow(() -> new UserNotFoundException("No user"));
 
-        orderDAO.post(user);
-
+        Optional<Product> product;
+        Optional<Stock> stock;
         for(LineItem lineItem : lineItems) {
-            Optional<Product> product = productDAO.get(lineItem.getProductId());
-            int quantityProduct = lineItem.getQuantity();
-            int quantityStock = stockDAO.get(lineItem.getProductId()).getQuantity();
 
-            if(product.isEmpty() || quantityProduct < quantityStock) {
+            product = productDAO.get(lineItem.getProductId());
+            stock = stockDAO.get(lineItem.getProductId());
+
+            if(product.isEmpty() || stock.isEmpty()){
                 throw new BadOrderException(lineItem);
             }
+
+            int productQuantity = lineItem.getQuantity();
+            int stockQuantity = stockDAO.get(lineItem.getProductId()).get().getQuantity();
+
+            if(productQuantity < stockQuantity) {
+                throw new BadOrderException("Stock has less products than you need");
+            }
         }
+        orderDAO.post(user);
     }
 
     public void updateStatus(String status, int id) {

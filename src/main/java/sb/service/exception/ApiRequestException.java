@@ -37,4 +37,9 @@ public class ApiRequestException {
     private ResponseEntity<LineItem> handle (BadOrderException e) {
         return new ResponseEntity<>(e.getLineItem(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = {StockNotFoundException.class})
+    private ResponseEntity<Object> handle (StockNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

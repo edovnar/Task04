@@ -8,7 +8,6 @@ import sb.domain.mapper.UserMapper;
 import sb.domain.dto.UserDTO;
 import sb.service.UserService;
 import sb.service.exception.CreationException;
-import sb.web.Validation.ValidatorExample;
 
 import javax.validation.Valid;
 import java.util.List;
