@@ -1,6 +1,5 @@
 package sb.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +16,13 @@ import java.util.List;
 public class SupplierService {
 
     private SupplierDAO supplierDAO;
-    @Autowired
     private UserDAO userDAO;
 
-    public SupplierService(SupplierDAO supplierDAO) {
+    public SupplierService(SupplierDAO supplierDAO, UserDAO userDAO) {
         this.supplierDAO = supplierDAO;
+        this.userDAO = userDAO;
     }
+
 
     public List<Supplier> getAll() {
         return supplierDAO.getAll();

@@ -19,11 +19,11 @@ import java.util.Optional;
 @Transactional
 public class OrderService {
 
-    private final OrderDAO orderDAO;
-    private final UserDAO userDAO;
-    private final ProductDAO productDAO;
-    private final StockDAO stockDAO;
-    private final LineItemDAO lineItemDAO;
+    private OrderDAO orderDAO;
+    private UserDAO userDAO;
+    private ProductDAO productDAO;
+    private StockDAO stockDAO;
+    private LineItemDAO lineItemDAO;
 
     public OrderService(OrderDAO orderDAO, UserDAO userDAO, ProductDAO productDAO, StockDAO stockDAO, LineItemDAO lineItemDAO) {
         this.orderDAO = orderDAO;

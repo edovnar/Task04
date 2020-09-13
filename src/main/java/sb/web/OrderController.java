@@ -33,17 +33,15 @@ public class OrderController {
     private OrderService orderService;
     private UserService userService;
     private OrderMapper orderMapper;
-
-    @Autowired
     private OrderSort orderSort;
 
-    public OrderController(OrderService orderService,
-                           UserService userService,
-                           OrderMapper orderMapper) {
+    public OrderController(OrderService orderService, UserService userService, OrderMapper orderMapper, OrderSort orderSort) {
         this.orderService = orderService;
         this.userService = userService;
         this.orderMapper = orderMapper;
+        this.orderSort = orderSort;
     }
+
 
     @GetMapping
     public List<OrderDTO> getAll(@Param("status") String status, @Param("sortBy") String sortBy) {

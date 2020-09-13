@@ -1,6 +1,5 @@
 package sb.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +15,13 @@ import java.util.List;
 @Transactional
 public class ProductService {
     
-    @Autowired
     private ProductDAO productDAO;
-    @Autowired
     private SupplierDAO supplierDAO;
+
+    public ProductService(ProductDAO productDAO, SupplierDAO supplierDAO) {
+        this.productDAO = productDAO;
+        this.supplierDAO = supplierDAO;
+    }
 
     public List<Product> getAll() {
         return productDAO.getAll();
