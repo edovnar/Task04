@@ -6,6 +6,5 @@ import org.springframework.data.annotation.Id;
 @Data
 public class BaseEntity {
 
-    @Id
-    private int id;
+    private Integer id;
 }

@@ -1,19 +1,23 @@
 package sb.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import sb.domain.entity.User;
 import sb.persistence.dao.UserDAO;
 import sb.service.exception.CreationException;
+import sb.service.exception.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
-@Component
+@Service
+@Transactional
 public class UserService implements UserDetailsService {
 
     private final UserDAO userDAO;
@@ -27,15 +31,20 @@ public class UserService implements UserDetailsService {
     }
 
     public User get(int id) {
-        return userDAO.get(id);
+        return userDAO.get(id)
+                .orElseThrow(() -> new NotFoundException("There is no such user"));
     }
 
-    public Optional<User> getByName(String name) {
-        return userDAO.getByName(name);
+    public User getByName(String name) {
+        return userDAO.getByName(name)
+                .orElseThrow(() -> new NotFoundException("There is no such user"));
     }
 
-    public void updateStatus(int id, String role) {
-        if (role.equals("admin") || role.equals("user")) {
+    public void updateStatus(int id, User user) {
+        userDAO.get(id)
+                .orElseThrow(() -> new NotFoundException("No such user"));
+        String role = user.getRole();
+        if (role!=null && (role.equals("admin") || role.equals("user"))) {
         userDAO.updateStatus(id, role);
         } else {
             throw new CreationException("The role is designed incorrectly");
@@ -54,6 +63,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(int id) {
+        userDAO.get(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
         userDAO.delete(id);
     }
 

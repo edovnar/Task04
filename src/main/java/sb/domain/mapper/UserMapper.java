@@ -8,12 +8,6 @@ import sb.persistence.dao.UserDAO;
 @Component
 public class UserMapper {
 
-    private final UserDAO userDAO;
-
-    public UserMapper(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
     public UserDTO toModel(User user) {
         return new UserDTO(
                 user.getId(),

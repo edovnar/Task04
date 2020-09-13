@@ -40,7 +40,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public String updateStatus(@PathVariable("id") int id,
                                @RequestBody User user) {
-        userService.updateStatus(id, user.getRole());
+        userService.updateStatus(id, user);
         return "Successfully updated";
     }
 

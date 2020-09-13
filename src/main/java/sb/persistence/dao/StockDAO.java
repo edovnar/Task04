@@ -21,13 +21,13 @@ public class StockDAO {
         rowMapper = new BeanPropertyRowMapper<>(Stock.class);
     }
 
-    private final String SQL_SELECT_ALL = "Select * from stocks ";
+    private final String SQL_SELECT_ALL = "select * from stocks ";
 
-    private final String SQL_SELECT_BY_ID = "Select * from stocks where id = :id";
+    private final String SQL_SELECT_BY_ID = "select * from stocks where id = :id";
 
-    private final String SQL_UPDATE_BY_ID = "Update stocks set quantity = :quantity where id = :id";
+    private final String SQL_UPDATE_BY_ID = "update stocks set quantity = :quantity where id = :id";
 
-    private final String POST = "Insert into stocks(id, quantity) values(:id, :quantity)";
+    private final String POST = "insert into stocks(id, quantity) values(:id, :quantity)";
 
     public List<Stock> getAll() {
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
@@ -36,6 +36,7 @@ public class StockDAO {
     public Optional<Stock> get(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
+
         Stock stock = null;
         try {
             stock = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);

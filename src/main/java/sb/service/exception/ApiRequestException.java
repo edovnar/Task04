@@ -6,7 +6,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import sb.domain.entity.LineItem;
 
 @ControllerAdvice
 public class ApiRequestException {
@@ -17,25 +16,23 @@ public class ApiRequestException {
         BindingResult bindingResult = e.getBindingResult();
 
         String response ="";
-        if(bindingResult!=null) {
+        if(bindingResult != null) {
             for(ObjectError objectError : e.getBindingResult().getAllErrors()) {
-                response = response.concat(objectError.getObjectName() + ": "
-                        + objectError.getDefaultMessage() + " "
-                        + e.getMessage());
+                response = response.concat(objectError.getObjectName() + ": " + objectError.getDefaultMessage());
             }
         } else response = e.getMessage();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {UserNotFoundException.class})
-    public ResponseEntity<Object> handle (UserNotFoundException e){
+    @ExceptionHandler(value = {NotFoundException.class})
+    public ResponseEntity<Object> handle (NotFoundException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = {BadOrderException.class})
-    private ResponseEntity<LineItem> handle (BadOrderException e) {
-        return new ResponseEntity<>(e.getLineItem(), HttpStatus.BAD_REQUEST);
+    private ResponseEntity<Object> handle (BadOrderException e) {
+        return new ResponseEntity<>(e.getLineItem() + e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {StockNotFoundException.class})

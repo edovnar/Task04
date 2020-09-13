@@ -22,21 +22,21 @@ public class ProductDAO {
         rowMapper = new BeanPropertyRowMapper<>(Product.class);
     }
 
-    private final String SQL_SELECT_BY_ID = "Select * from products where id = :id";
+    private final String SQL_SELECT_BY_ID = "select * from products where id = :id";
 
-    private final String SQL_SELECT_ALL = "Select * from products";
+    private final String SQL_SELECT_ALL = "select * from products";
 
-    private final String SQL_SELECT_BY_NAME = "Select * from products where name = :name";
+    private final String SQL_SELECT_BY_NAME = "select * from products where name = :name";
 
-    private final String SQL_SELECT_BY_SUPPLIERID = "Select * from products where supplierid = :supplierId";
+    private final String SQL_SELECT_BY_SUPPLIERID = "select * from products where supplierid = :supplierId";
 
-    private final String SQL_SELECT_BY_STOCKID = "Select * from products where stockid = :stockId";
+    private final String SQL_SELECT_BY_STOCKID = "select * from products where stockid = :stockId";
 
-    private final String SQL_POST = "Insert into products(suppliedId, name) values (:suppliedId, :name)";
+    private final String SQL_POST = "insert into products(supplierId, name) values (:supplierId, :name)";
 
-    private final String SQL_DELETE_BY_ID = "Delete from products where id = :id";
+    private final String SQL_DELETE_BY_ID = "delete from products where id = :id";
 
-    private final String SQL_UPDATE_BY_ID = "Update products set name = :name where id = :id";
+    private final String SQL_UPDATE_BY_ID = "update products set name = :name where id = :id";
 
 
     public Optional<Product> get(int id){
@@ -51,19 +51,29 @@ public class ProductDAO {
     }
 
 
-    public Product getByName(String name){
+    public Optional<Product> getByName(String name){
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("name", name);
 
-        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, map, rowMapper);
+        Product product = null;
+        try {
+            product = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, map, rowMapper);
+        } catch (DataAccessException ignored){}
+
+        return Optional.ofNullable(product);
     }
 
 
-    public Product getByStock(int id){
+    public Optional<Product> getByStock(int id){
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("stockId", id);
 
-        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_STOCKID, map, rowMapper);
+        Product product = null;
+        try {
+            product = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_STOCKID, map, rowMapper);
+        } catch (DataAccessException ignored){}
+
+        return Optional.ofNullable(product);
     }
 
 
@@ -83,7 +93,7 @@ public class ProductDAO {
 
     public void post(Product product) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("suppliedId", product.getSupplierId())
+                .addValue("supplierId", product.getSupplierId())
                 .addValue("name", product.getName());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -96,9 +106,9 @@ public class ProductDAO {
         namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
     }
 
-    public void update(Product product){
+    public void update(int id, Product product){
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", product.getId())
+                .addValue("id", id)
                 .addValue("name", product.getName());
         namedJdbcTemplate.update(SQL_UPDATE_BY_ID, map);
     }

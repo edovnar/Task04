@@ -9,6 +9,7 @@ import java.sql.Date;
 @AllArgsConstructor
 public class SupplierDTO {
 
+    private Integer id;
     private String userName;
     private String name;
     private String address;

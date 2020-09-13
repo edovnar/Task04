@@ -9,5 +9,5 @@ public class Product extends BaseEntity {
 
     @NotBlank(message = "Name is required")
     private String name;
-    private int supplierId;
+    private Integer supplierId;
 }

@@ -1,14 +1,20 @@
 package sb.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.ui.Model;
+
 import javax.validation.constraints.Positive;
 
 @Data
-public class LineItem extends BaseEntity{
+@NoArgsConstructor
+@AllArgsConstructor
+public class LineItem {
 
-    private int orderId;
-    private int productId;
+    private Integer orderId;
+    private Integer productId;
 
     @Positive
-    private int quantity;
+    private Integer quantity;
 }

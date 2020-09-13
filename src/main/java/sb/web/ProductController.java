@@ -7,7 +7,6 @@ import sb.domain.mapper.ProductMapper;
 import sb.domain.dto.ProductDTO;
 import sb.service.ProductService;
 import sb.service.exception.CreationException;
-import sb.service.exception.UserNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,9 +33,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductDTO get(@PathVariable("id") int id) {
-        return productMapper.toModel(productService.get(id)
-                .orElseThrow(() -> new UserNotFoundException("No such product"))
-        );
+        return productMapper.toModel(productService.get(id));
     }
 
     @PostMapping
@@ -53,8 +50,11 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody Product product) {
-        productService.update(product);
+    public void update(@PathVariable("id") int id, @RequestBody @Valid Product product, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CreationException(bindingResult);
+        }
+        productService.update(id, product);
     }
 
 }

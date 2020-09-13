@@ -1,5 +1,6 @@
 package sb.persistence.dao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,6 +12,7 @@ import sb.domain.entity.User;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OrderDAO{
@@ -23,29 +25,34 @@ public class OrderDAO{
         rowMapper = new BeanPropertyRowMapper<>(Order.class);
     }
 
-    private final String SQL_SELECT_ALL = "Select * from orders";
+    private final String SQL_SELECT_ALL = "select * from orders";
 
-    private final String SQL_SELECT_BY_ID = "Select * from orders where id = :id";
+    private final String SQL_SELECT_BY_ID = "select * from orders where id = :id";
 
-    private final String SQL_SELECT_BY_USER = "Select * from orders where submitted_by = :submittedBy";
+    private final String SQL_SELECT_BY_USER = "select * from orders where submitted_by = :submittedBy";
 
     private final String SQL_INSERT =
-            "Insert into orders(shipped, submitted_by, submitted_at, updated_at) values (:shipped, :submittedBy, :submittedAt, :updatedAt)";
+            "insert into orders(shipped, submitted_by, submitted_at, updated_at) values (:shipped, :submittedBy, :submittedAt, :updatedAt)";
 
-    private final String SQL_DELETE_BY_ID = "Delete from orders where id = :id";
+    private final String SQL_DELETE_BY_ID = "delete from orders where id = :id";
 
-    private final String SQL_UPDATE_STATUS_BY_ID = "Update orders set shipped = :shipped, updated_at = :updatedAt where id = :id";
+    private final String SQL_UPDATE_STATUS_BY_ID = "update orders set shipped = :shipped, updated_at = :updatedAt where id = :id";
 
 
     public List<Order> getAll() {
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
-    public Order get(int id) {
+    public Optional<Order> get(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map,rowMapper);
+        Order order = null;
+        try {
+            order = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map,rowMapper);
+        } catch (DataAccessException ignored){}
+
+        return Optional.ofNullable(order);
     }
 
     public List<Order> getByUser(int id) {

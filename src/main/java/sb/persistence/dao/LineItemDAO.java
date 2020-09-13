@@ -21,23 +21,27 @@ public class LineItemDAO {
         rowMapper = new BeanPropertyRowMapper<>(LineItem.class);
     }
 
-    private final String SQL_SELECT_BY_ORDERID_PRODUCTID =
-            "Select * from lineitems where orderid = :orderId " +
+    private final static String SQL_SELECT_BY_ORDERID_PRODUCTID =
+            "select * from lineitems where orderid = :orderId " +
                     "and productid = :productId";
 
-    private final String SQL_SELECT_ALL = "select * from lineitems";
+    private final static String SQL_SELECT_ALL = "select * from lineitems";
 
-    private final String SQL_SELECT_BY_ORDER = "select * from lineitems where orderid = :orderId";
+    private final static String SQL_SELECT_BY_ORDER = "select * from lineitems where orderid = :orderId";
 
-    private final String SQL_INSERT = "insert into lineitems(orderid, productid, quantity) values(:orderid, :productid, quantity)";
+    private final static String SQL_SELECT_BY_PRODUCT = "select * from lineitems where productid = :productId";
+
+    private final static String SLQ_UPDATE = "update lineitems set quantity = :quantity where orderid = :orderId and productid = :productId";
+
+    private final static String SQL_INSERT = "insert into lineitems(orderid, productid, quantity) values(:orderId, :productId, :quantity)";
 
 
-    public List<LineItem> get(int orderId, int productId){
+    public LineItem get(int orderId, int productId){
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("orderId", orderId)
                 .addValue("productId", productId);
 
-        return namedJdbcTemplate.query(SQL_SELECT_BY_ORDERID_PRODUCTID, map, rowMapper);
+        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ORDERID_PRODUCTID, map, rowMapper);
     }
 
     public List<LineItem> getAll() {
@@ -52,15 +56,29 @@ public class LineItemDAO {
         return namedJdbcTemplate.query(SQL_SELECT_BY_ORDER, map, rowMapper);
     }
 
-//    public List<LineItem> getByProduct
+    public List<LineItem> getByProduct(int productId) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("productId", productId);
+
+        return namedJdbcTemplate.query(SQL_SELECT_BY_PRODUCT, map, rowMapper);
+    }
 
     public void post(LineItem lineItem) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("orderid", lineItem.getOrderId())
-                .addValue("productid", lineItem.getProductId())
+                .addValue("orderId", lineItem.getOrderId())
+                .addValue("productId", lineItem.getProductId())
                 .addValue("quantity", lineItem.getQuantity());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(SQL_INSERT, map, keyHolder, new String[]{"id"});
+    }
+
+    public void update(LineItem lineItem) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("quantity", lineItem.getQuantity())
+                .addValue("orderId", lineItem.getOrderId())
+                .addValue("productId", lineItem.getProductId());
+
+        namedJdbcTemplate.update(SLQ_UPDATE,map);
     }
 }

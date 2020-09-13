@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import sb.domain.entity.User;
-import sb.service.exception.UserNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,19 +51,16 @@ public class UserDAO {
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
-    public User get(int id) {
+    public Optional<User> get(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
         User user = null;
         try {
             user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
-        } catch (EmptyResultDataAccessException ignored) {
-            throw new UserNotFoundException("No such user");
-        }
+        } catch (EmptyResultDataAccessException ignored) {}
 
-       // return Optional.ofNullable(user);
-        return user;
+        return Optional.ofNullable(user);
     }
 
     public Optional<User> getByName(String name) {
@@ -117,7 +113,6 @@ public class UserDAO {
         namedJdbcTemplate.update(SQL_POST, map, keyHolder, new String[]{"id"});
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);

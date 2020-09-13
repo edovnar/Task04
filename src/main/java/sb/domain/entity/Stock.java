@@ -6,6 +6,6 @@ import javax.validation.constraints.Positive;
 @Data
 public class Stock extends BaseEntity {
 
-    @Positive (message = "Positive is required")
-    private int quantity;
+    @Positive (message = "Quantity should be positive")
+    private Integer quantity;
 }

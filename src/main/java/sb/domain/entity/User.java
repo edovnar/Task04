@@ -1,11 +1,9 @@
 package sb.domain.entity;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Data
 public class User extends BaseEntity {
@@ -16,8 +14,10 @@ public class User extends BaseEntity {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @NotBlank(message = "Role is required")
     private String role;
 
     @Email
+    @NotBlank(message = "Email is required")
     private String email;
 }
