@@ -1,27 +1,21 @@
-package sb.domain.mapper;
+package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 import sb.domain.dto.ProductDTO;
+import sb.domain.dto.UserDTO;
 import sb.domain.entity.LineItem;
 import sb.domain.entity.Order;
 import sb.domain.dto.OrderDTO;
 import sb.domain.entity.Product;
 import sb.domain.entity.User;
 import sb.persistence.dao.LineItemDAO;
-import sb.persistence.dao.OrderDAO;
-import sb.persistence.dao.ProductDAO;
-import sb.persistence.dao.UserDAO;
 import sb.service.ProductService;
 import sb.service.UserService;
-import sb.service.exception.CreationException;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
@@ -42,19 +36,22 @@ public class OrderMapper {
         List<ProductDTO> productDTOs = new ArrayList<>();
         List<LineItem> lineItems = lineItemDAO.getByOrder(order.getId());
 
+        ProductDTO productDTO;
+        Product product;
         for (LineItem lineItem : lineItems) {
-            Product product = productService.get(lineItem.getProductId());
-            productDTOs.add(
-                    productMapper.toModel(product)
-            );
+            product = productService.get(lineItem.getProductId());
+            productDTO= productMapper.toModel(product);
+
+            productDTO.setQuantity(lineItem.getQuantity());
+            productDTOs.add(productDTO);
         }
+        UserDTO userDTO = userMapper.toModel(userService.get(order.getSubmittedBy()));
+        userDTO.setId(null);
         return new OrderDTO(
                 order.getId(),
                 order.getShipped(),
                 order.getSubmittedAt(),
-                userMapper.toModel(
-                        userService.get(order.getSubmittedBy())
-                ),
+                userDTO,
                 productDTOs
         );
     }

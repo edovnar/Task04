@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.User;
-import sb.domain.mapper.UserMapper;
+import sb.utils.mapper.UserMapper;
 import sb.domain.dto.UserDTO;
 import sb.service.UserService;
 import sb.service.exception.CreationException;
@@ -27,9 +27,7 @@ public class UserController {
 
     @GetMapping
     public List<UserDTO> getAll() {
-        return  userService.getAll().stream()
-                .map(userMapper::toModel)
-                .collect(Collectors.toList());
+        return  userMapper.allToModel(userService.getAll());
     }
 
     @GetMapping("/{id}")

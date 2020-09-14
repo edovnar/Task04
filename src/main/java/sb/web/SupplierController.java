@@ -3,8 +3,7 @@ package sb.web;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.Supplier;
-import sb.domain.mapper.SupplierMapper;
-import sb.domain.dto.OrderDTO;
+import sb.utils.mapper.SupplierMapper;
 import sb.domain.dto.SupplierDTO;
 import sb.persistence.dao.SupplierDAO;
 import sb.service.SupplierService;
@@ -12,7 +11,6 @@ import sb.service.exception.CreationException;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/suppliers")

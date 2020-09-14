@@ -1,29 +1,22 @@
 package sb.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import sb.domain.dto.LineItemDTO;
 import sb.domain.entity.LineItem;
-import sb.domain.entity.Order;
-import sb.domain.entity.Product;
 import sb.domain.entity.User;
-import sb.domain.mapper.LineItemMapper;
-import sb.domain.mapper.OrderMapper;
+import sb.utils.mapper.OrderMapper;
 import sb.domain.dto.OrderDTO;
 import sb.service.OrderService;
-import sb.service.ProductService;
 import sb.service.UserService;
 import sb.service.exception.CreationException;
 import sb.utils.OrderSort;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -51,7 +44,7 @@ public class OrderController {
         List<OrderDTO> orders = new ArrayList<>();
         if (user.getRole().equals("admin")) {
            orders = orderMapper.allToModel(orderService.getAll());
-           orders = orderSort.sortOrder(sortBy, status, orders);
+           orders = orderSort.sort(sortBy, status, orders);
         }
         return orders;
     }
@@ -78,16 +71,18 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public void update(@PathVariable("id") int id,
+    public OrderDTO update(@PathVariable("id") int id,
                        @Param("status") String status,
                        @RequestBody @Valid LineItem lineItem) {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = userService.getByName(context.getAuthentication().getName());
-        if(user.getRole().equals("admin")){
-            orderService.updateStatus(status, id);
+
+        if(orderService.get(id).getSubmittedBy().equals(user.getId()) && lineItem != null){
+            return orderMapper.toModel(orderService.update(id, lineItem));
+        }else if(user.getRole().equals("admin")){
+            return orderMapper.toModel(orderService.updateStatus(status, id));
         }
-        if(orderService.get(id).getSubmittedBy() == user.getId()){
-            orderService.update(id, lineItem);
-        }
+
+        return orderMapper.toModel(orderService.get(id));
     }
 }

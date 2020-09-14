@@ -1,16 +1,19 @@
 package sb.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import sb.domain.dto.OrderDTO;
 import sb.domain.entity.*;
 import sb.persistence.dao.*;
 import sb.service.exception.BadOrderException;
 import sb.service.exception.CreationException;
 import sb.service.exception.NotFoundException;
+import sb.utils.mapper.OrderMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ public class OrderService {
     private ProductDAO productDAO;
     private StockDAO stockDAO;
     private LineItemDAO lineItemDAO;
+    @Autowired
+    private OrderMapper orderMapper;
 
     public OrderService(OrderDAO orderDAO, UserDAO userDAO, ProductDAO productDAO, StockDAO stockDAO, LineItemDAO lineItemDAO) {
         this.orderDAO = orderDAO;
@@ -68,8 +73,8 @@ public class OrderService {
             int productQuantity = lineItem.getQuantity();
             int stockQuantity = stockDAO.get(lineItem.getProductId()).get().getQuantity();
 
-            if(productQuantity > stockQuantity) {
-                throw new BadOrderException(lineItem, "Don't have so many on the stock(" + stockQuantity +")");
+            if(productQuantity < 1 || productQuantity > stockQuantity) {
+                throw new BadOrderException(lineItem, "Don't have the quantity on the stock(" + stockQuantity +")");
             }
 
             stock.get().setQuantity(stockQuantity-productQuantity);
@@ -79,33 +84,36 @@ public class OrderService {
         }
     }
 
-    public void updateStatus(String status, int id) {
+    public Order updateStatus(String status, int orderId) {
 
-        orderDAO.get(id)
+        orderDAO.get(orderId)
                 .orElseThrow(() -> new NotFoundException("No such order"));
 
         if(status!=null && (status.equals("false") || status.equals("true"))){
-            orderDAO.update(status, id);
+            orderDAO.update(status, orderId);
+            return orderDAO.get(orderId).get();
         }else throw new CreationException("Wrong status");
     }
 
-    public void update(int orderId, LineItem lineItem) {
+    public Order update(int orderId, LineItem lineItem) {
         if(orderDAO.get(orderId).isPresent()
                 && orderDAO.get(orderId).get().getShipped().equals("false")) {
-            Stock stock = stockDAO.get(lineItem.getProductId())
-                    .orElseThrow(() -> new NotFoundException("No such product"));
-
+            if(lineItem.getProductId() == null || stockDAO.get(lineItem.getProductId()).isEmpty()) {
+                throw new NotFoundException("No such product");
+            }
+            Stock stock = stockDAO.get(lineItem.getProductId()).get();
             int newQuantity = lineItem.getQuantity();
             int oldQuantity = lineItemDAO.get(orderId, lineItem.getProductId()).getQuantity();
             int stockQuantity = stockDAO.get(lineItem.getProductId()).get().getQuantity();
 
             if(stockQuantity + oldQuantity >= newQuantity){
-                stock.setQuantity(stockQuantity + Math.abs(newQuantity - oldQuantity));
+                stock.setQuantity(stockQuantity - (newQuantity - oldQuantity));
                 stockDAO.update(stock);
 
                 lineItem.setOrderId(orderId);
                 lineItemDAO.update(lineItem);
             }
+            return orderDAO.get(orderId).get();
         } else throw new NotFoundException("Can't update such order");
     }
 

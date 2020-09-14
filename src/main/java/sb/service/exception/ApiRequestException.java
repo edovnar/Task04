@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class ApiRequestException {
@@ -38,5 +39,10 @@ public class ApiRequestException {
     @ExceptionHandler(value = {StockNotFoundException.class})
     private ResponseEntity<Object> handle (StockNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    private ResponseEntity<Object> handle (MethodArgumentTypeMismatchException e) {
+        return new ResponseEntity<>("invalid path variable", HttpStatus.BAD_REQUEST);
     }
 }

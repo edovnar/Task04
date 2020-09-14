@@ -1,11 +1,9 @@
-package sb.domain.mapper;
+package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Stock;
 import sb.domain.dto.StockDTO;
-import sb.persistence.dao.ProductDAO;
-import sb.persistence.dao.StockDAO;
 import sb.service.ProductService;
 
 @Component

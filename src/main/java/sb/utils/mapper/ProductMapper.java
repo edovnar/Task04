@@ -1,11 +1,10 @@
-package sb.domain.mapper;
+package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sb.domain.entity.Product;
 import sb.domain.dto.ProductDTO;
 import sb.persistence.dao.StockDAO;
-import sb.persistence.dao.SupplierDAO;
 import sb.service.SupplierService;
 
 import java.util.ArrayList;
@@ -34,7 +33,9 @@ public class ProductMapper {
         return new ProductDTO(
                 product.getId(),
                 product.getName(),
-                supplierName
+                supplierName,
+                null
+
         );
     }
 

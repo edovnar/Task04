@@ -1,4 +1,4 @@
-package sb.domain.mapper;
+package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
                 userDAO.post(user);
 
             } else throw new CreationException("Define the role");
-        } else throw new CreationException("Invalid email (User with this email is already exists or is empty)");
+        } else throw new CreationException("Invalid email");
     }
 
     public void delete(int id) {

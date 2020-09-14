@@ -16,5 +16,5 @@ public class LineItem {
     private Integer productId;
 
     @Positive
-    private Integer quantity;
+    private int quantity;
 }

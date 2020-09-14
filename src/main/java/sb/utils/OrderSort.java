@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderSort {
 
-    public List<OrderDTO> sortOrder (String sortBy, String status, List<OrderDTO> orders) {
+    public List<OrderDTO> sort (String sortBy, String status, List<OrderDTO> orders) {
 
         if(sortBy!=null) {
             if (sortBy.equals("_id")) {

@@ -12,7 +12,6 @@ import java.sql.Date;
 public class Supplier extends BaseEntity {
 
     @Positive
-    @Range(min = 1, max = 999999999)
     private Integer userId;
 
     @NotBlank(message = "Name is required")
@@ -24,7 +23,8 @@ public class Supplier extends BaseEntity {
     private Integer payerNumber;
 
     @NotNull(message = "Certificate can't be null")
-    private Integer registrationCertificateNumber;
+    @Positive
+    private int registrationCertificateNumber;
     private Date registrationDate;
     private String phoneNumber;
 }

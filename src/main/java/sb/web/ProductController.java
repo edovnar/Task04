@@ -3,7 +3,7 @@ package sb.web;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.Product;
-import sb.domain.mapper.ProductMapper;
+import sb.utils.mapper.ProductMapper;
 import sb.domain.dto.ProductDTO;
 import sb.service.ProductService;
 import sb.service.exception.CreationException;
