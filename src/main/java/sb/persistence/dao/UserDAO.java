@@ -43,9 +43,7 @@ public class UserDAO {
 
     private final String SQL_POST = "insert into users(name, password, role, email) values(:name, :password, :role, :email)";
 
-    private final String SQL_DELETE_BY_ID = "update suppliers set userid = null where exists (select * from suppliers where userid = :id) " +
-                                            "and userid = :id; " +
-                                            "Delete from users where id = :id";
+    private final String SQL_DELETE_BY_ID = "delete from users where id = :id";
 
     public List<User> getAll() {
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);

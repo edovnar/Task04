@@ -44,9 +44,7 @@ public class SupplierDAO {
     private final String POST = "insert into suppliers(userid, name, address, payernumber, registrationcertificatenumber, registrationdate, phonenumber) " +
             "values(:userId, :name, :address, :payerNumber, :registrationCertificateNumber, :registrationDate, :phoneNumber)";
 
-    private final String SQL_DELETE_BY_ID = "update products set supplierid=null where exists " +
-                                            "(select * from products where supplierid = :id) " +
-                                            "and supplierid = :id; " + "Delete from suppliers where id = :id";
+    private final String SQL_DELETE_BY_ID = "delete from suppliers where id = :id";
 
     public List<Supplier> getAll() {
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
