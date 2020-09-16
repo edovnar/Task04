@@ -23,6 +23,7 @@ public class UserMapper {
         for (User user : users) {
             userDTOs.add(toModel(user));
         }
+
         return userDTOs;
     }
 }

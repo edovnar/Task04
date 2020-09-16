@@ -89,7 +89,6 @@ public class UserDAO {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("role", role)
                 .addValue("id", id);
-
         namedJdbcTemplate.update(SQL_UPDATE_ROLE_BY_ID, map);
     }
 
@@ -111,6 +110,7 @@ public class UserDAO {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(SQL_POST, map, keyHolder, new String[]{"id"});
+
         return keyHolder.getKey().intValue();
     }
 

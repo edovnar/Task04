@@ -13,5 +13,6 @@ public class Product extends BaseEntity {
 
     @NotBlank
     private String name;
+
     private Integer supplierId;
 }

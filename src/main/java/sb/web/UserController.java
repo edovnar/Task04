@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.User;
-import sb.service.exception.Message;
+import sb.utils.Message;
 import sb.utils.mapper.UserMapper;
 import sb.domain.dto.UserDTO;
 import sb.service.UserService;
@@ -12,7 +12,6 @@ import sb.service.exception.CreationException;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -40,6 +39,7 @@ public class UserController {
     public Message updateStatus(@PathVariable("id") int id,
                                 @RequestBody User user) {
         userService.updateStatus(id, user);
+
         return new Message("Successfully updated");
     }
 
@@ -49,6 +49,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             throw new CreationException(bindingResult);
         }
+
         return userMapper.toModel(userService.create(user));
     }
 

@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sb.domain.dto.request.OrderDTORequest;
-import sb.domain.entity.LineItem;
 import sb.domain.entity.Order;
 import sb.domain.entity.User;
 import sb.utils.mapper.OrderMapper;
@@ -39,7 +38,6 @@ public class OrderController {
 
     @GetMapping
     public List<OrderDTOResponse> getAll(@Param("status") String status, @Param("sortBy") String sortBy) {
-
         List<OrderDTOResponse> orderDTOs = orderMapper.allToModel(orderService.getAll());
         orderDTOs = orderSort.sort(sortBy, status, orderDTOs);
         return orderDTOs;
@@ -47,7 +45,6 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public OrderDTOResponse get(@PathVariable("id") int id) {
-
         return orderMapper.toModel(orderService.get(id));
     }
 
@@ -57,9 +54,9 @@ public class OrderController {
         if (bindingResult.hasErrors()) {
             throw new CreationException(bindingResult);
         }
-
         Order order = orderService.save(orderDTORequest);
-      return orderMapper.toModel(order);
+
+        return orderMapper.toModel(order);
     }
 
     @DeleteMapping("/{id}")
@@ -84,7 +81,6 @@ public class OrderController {
     @PatchMapping("/{id}")
     public OrderDTOResponse updateStatus (@PathVariable("id") int id,
                                           @RequestBody OrderDTORequest orderDTORequest) {
-
         return orderMapper.toModel(orderService.updateStatus(orderDTORequest.getStatus(), id));
     }
 }

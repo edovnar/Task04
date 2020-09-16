@@ -12,8 +12,11 @@ import java.util.List;
 @Component
 public class SupplierMapper {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public SupplierMapper(UserService userService) {
+        this.userService = userService;
+    }
 
     public SupplierDTO toModel(Supplier supplier) {
         String supplierName = "";
@@ -22,6 +25,7 @@ public class SupplierMapper {
         } else {
             supplierName = "Have no representative yet";
         }
+
         return new SupplierDTO(
                 supplier.getId(),
                 supplierName,

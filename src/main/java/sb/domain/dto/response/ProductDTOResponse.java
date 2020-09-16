@@ -3,8 +3,6 @@ package sb.domain.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sb.domain.entity.Stock;
-import sb.domain.entity.Supplier;
 
 @Data
 @AllArgsConstructor

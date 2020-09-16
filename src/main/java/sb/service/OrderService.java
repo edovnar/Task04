@@ -1,6 +1,5 @@
 package sb.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,11 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import sb.domain.dto.request.OrderDTORequest;
 import sb.domain.entity.*;
 import sb.persistence.dao.*;
-import sb.service.exception.BadOrderException;
-import sb.service.exception.CreationException;
-import sb.service.exception.NotFoundException;
-import sb.utils.mapper.LineItemMapper;
-import sb.utils.mapper.OrderMapper;
+import sb.service.exception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +24,14 @@ public class OrderService {
     private ProductDAO productDAO;
     private StockDAO stockDAO;
     private LineItemDAO lineItemDAO;
-    private final OrderMapper orderMapper;
-    @Autowired
-    private LineItemMapper lineItemMapper;
 
 
-    public OrderService(OrderDAO orderDAO, UserDAO userDAO, ProductDAO productDAO, StockDAO stockDAO, LineItemDAO lineItemDAO, OrderMapper orderMapper) {
+    public OrderService(OrderDAO orderDAO, UserDAO userDAO, ProductDAO productDAO, StockDAO stockDAO, LineItemDAO lineItemDAO) {
         this.orderDAO = orderDAO;
         this.userDAO = userDAO;
         this.productDAO = productDAO;
         this.stockDAO = stockDAO;
         this.lineItemDAO = lineItemDAO;
-        this.orderMapper = orderMapper;
     }
 
 

@@ -1,7 +1,6 @@
 package sb.domain.entity;
 
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
@@ -25,6 +24,7 @@ public class Supplier extends BaseEntity {
     @NotNull
     @Positive
     private int registrationCertificateNumber;
+
     private Date registrationDate;
     private String phoneNumber;
 }

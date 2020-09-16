@@ -26,6 +26,7 @@ public class UserService implements UserDetailsService {
         this.userDAO = userDAO;
     }
 
+
     public List<User> getAll(){
         return userDAO.getAll();
     }
@@ -61,9 +62,7 @@ public class UserService implements UserDetailsService {
 
         if (userDAO.getByEmail(user.getEmail()).isEmpty() && user.getEmail()!=null) {
             if (role.equals("admin") || role.equals("user")) {
-
                 userId = userDAO.post(user);
-
             } else {
                 throw new CreationException("Define the role");
             }
@@ -79,6 +78,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         userDAO.delete(id);
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {

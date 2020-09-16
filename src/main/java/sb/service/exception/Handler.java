@@ -6,13 +6,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import sb.utils.Message;
 
 @ControllerAdvice
 public class Handler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CreationException.class)
     public ResponseEntity<Message> handle (CreationException e) {
 
@@ -30,14 +29,14 @@ public class Handler {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Message> handle (NotFoundException e){
 
-        return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new Message(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
     @ExceptionHandler(BadOrderException.class)
     private ResponseEntity<Message> handle (BadOrderException e) {
         Message message = new Message(e.getMessage());
@@ -49,7 +48,7 @@ public class Handler {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     private ResponseEntity<Message> handle (MethodArgumentTypeMismatchException e) {
 

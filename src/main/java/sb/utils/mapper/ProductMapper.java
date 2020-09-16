@@ -16,10 +16,13 @@ import java.util.List;
 @Component
 public class ProductMapper {
 
-    @Autowired
-    private SupplierService supplierService;
-    @Autowired
-    private StockDAO stockDAO;
+    private final SupplierService supplierService;
+    private final StockDAO stockDAO;
+
+    public ProductMapper(SupplierService supplierService, StockDAO stockDAO) {
+        this.supplierService = supplierService;
+        this.stockDAO = stockDAO;
+    }
 
 
     public ProductDTOResponse toModel(Product product) {
@@ -49,11 +52,11 @@ public class ProductMapper {
         for(Product product : products) {
             productDTOResponses.add(toModel(product));
         }
+
         return productDTOResponses;
     }
 
     public Product toEntity(ProductDTORequest productDTORequest) {
-
         return new Product(productDTORequest.getName(), productDTORequest.getSupplierId());
     }
 }

@@ -1,47 +1,41 @@
 package sb.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import sb.domain.dto.response.ProductDTOResponse;
+
 import sb.domain.entity.Product;
 import sb.domain.entity.Stock;
 import sb.persistence.dao.ProductDAO;
 import sb.persistence.dao.StockDAO;
-import sb.persistence.dao.SupplierDAO;
 import sb.service.exception.NotFoundException;
 import sb.utils.ListToPageConverter;
-import sb.utils.mapper.ProductMapper;
-
-import java.util.List;
 
 @Service
 @Transactional
 public class ProductService {
-    
-    private ProductDAO productDAO;
-    private SupplierDAO supplierDAO;
-    @Autowired
-    private StockDAO stockDAO;
-    @Autowired
-    private ProductMapper productMapper;
 
-    public ProductService(ProductDAO productDAO, SupplierDAO supplierDAO) {
+    private final ProductDAO productDAO;
+    private final StockDAO stockDAO;
+
+    public ProductService(ProductDAO productDAO, StockDAO stockDAO) {
         this.productDAO = productDAO;
-        this.supplierDAO = supplierDAO;
+        this.stockDAO = stockDAO;
     }
+
 
     public Page<Product> getAll(Pageable pageable) {
         ListToPageConverter<Product> converter = new ListToPageConverter<>();
+
         return converter.toPage(productDAO.getAll(), pageable);
     }
 
     public Product get(int id) {
         productDAO.get(id).orElseThrow(() -> new NotFoundException("No product, dear"));
+
         return productDAO.get(id).get();
     }
 
@@ -51,13 +45,9 @@ public class ProductService {
     }
 
     public Product save(Product product) {
-//        Supplier supplier = supplierDAO.getByName(product.getSupplierName())
-//                .orElseThrow(() -> new NotFoundException("No such supplier"));
-
-//        Product product = productMapper.toEntity(productDTOResponse);
-
         int productId = productDAO.post(product);
         stockDAO.post(new Stock(productId, 1));
+
         return productDAO.get(productId).get();
     }
 

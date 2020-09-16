@@ -18,6 +18,6 @@ public class OrderDTORequest {
     private Date submittedAt;
     private UserDTO user;
 
-    @NotNull(message = "Can't be empty")
+    @NotNull
     private List<LineItem> lineItems;
 }

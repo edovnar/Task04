@@ -48,6 +48,7 @@ public class ProductController {
         Product product = productService.save(
                 productMapper.toEntity(productDTORequest)
         );
+
         return productMapper.toModel(product);
     }
 
@@ -64,6 +65,7 @@ public class ProductController {
             throw new CreationException(bindingResult);
         }
         Product product = productMapper.toEntity(productDTORequest);
+
         return productMapper.toModel(productService.update(id, product));
     }
 }

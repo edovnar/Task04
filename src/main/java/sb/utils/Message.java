@@ -1,4 +1,4 @@
-package sb.service.exception;
+package sb.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

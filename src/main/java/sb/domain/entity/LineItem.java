@@ -15,6 +15,7 @@ public class LineItem {
 
     @JsonIgnore
     private Integer orderId;
+
     private Integer productId;
 
     @Positive

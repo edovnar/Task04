@@ -26,7 +26,6 @@ public class SupplierController {
 
     @GetMapping
     public List<SupplierDTO> getAll() {
-
         return supplierMapper.allToModel(supplierService.getAll());
     }
 
@@ -42,6 +41,7 @@ public class SupplierController {
             throw new CreationException(bindingResult);
         }
         supplierService.save(supplier);
+
         return supplierMapper.toModel(supplier);
     }
 

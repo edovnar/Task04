@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import sb.domain.dto.response.ProductDTOResponse;
 
-import javax.validation.constraints.Positive;
-
 @Data
 @AllArgsConstructor
 public class LineItemDTO {

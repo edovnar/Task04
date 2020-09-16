@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import sb.domain.entity.Supplier;
 
 import java.util.Date;
@@ -50,7 +49,6 @@ public class SupplierDAO {
                                             "and supplierid = :id; " + "Delete from suppliers where id = :id";
 
     public List<Supplier> getAll() {
-
         return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
     }
 
@@ -107,6 +105,7 @@ public class SupplierDAO {
                 .addValue("registrationCertificateNumber", supplier.getRegistrationCertificateNumber());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
+
         return keyHolder.getKey().intValue();
     }
 

@@ -12,10 +12,13 @@ import java.util.List;
 @Component
 public class LineItemMapper {
 
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private ProductMapper productMapper;
+    private final ProductService productService;
+    private final ProductMapper productMapper;
+
+    public LineItemMapper(ProductService productService, ProductMapper productMapper) {
+        this.productService = productService;
+        this.productMapper = productMapper;
+    }
 
 
     public LineItemDTO toModel(LineItem lineItem) {
@@ -33,6 +36,7 @@ public class LineItemMapper {
         for (LineItem lineItem : lineItems) {
             lineItemDTOs.add(toModel(lineItem));
         }
+
         return lineItemDTOs;
     }
 
@@ -48,6 +52,7 @@ public class LineItemMapper {
         for (LineItemDTO lineItemDTO : lineItemDTOs) {
             lineItems.add(toEntity(lineItemDTO));
         }
+
         return lineItems;
     }
 }
