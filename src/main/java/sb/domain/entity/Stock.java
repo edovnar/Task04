@@ -1,11 +1,19 @@
 package sb.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Data
-public class Stock extends BaseEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Stock {
 
-    @Positive (message = "Quantity should be positive")
+    private Integer id;
+
+    @PositiveOrZero
     private Integer quantity;
 }

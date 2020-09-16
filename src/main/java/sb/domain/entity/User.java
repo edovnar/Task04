@@ -8,16 +8,16 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class User extends BaseEntity {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank
     private String name;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank
     private String password;
 
-    @NotBlank(message = "Role is required")
+    @NotBlank
     private String role;
 
     @Email
-    @NotBlank(message = "Email is required")
+    @NotBlank
     private String email;
 }

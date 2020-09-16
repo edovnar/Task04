@@ -91,13 +91,14 @@ public class ProductDAO {
     }
 
 
-    public void post(Product product) {
+    public int post(Product product) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("supplierId", product.getSupplierId())
                 .addValue("name", product.getName());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(SQL_POST, map, keyHolder, new String[]{"id"});
+        return keyHolder.getKey().intValue();
     }
 
     public void delete(int id) {

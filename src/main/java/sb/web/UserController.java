@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.User;
+import sb.service.exception.Message;
 import sb.utils.mapper.UserMapper;
 import sb.domain.dto.UserDTO;
 import sb.service.UserService;
@@ -36,25 +37,24 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public String updateStatus(@PathVariable("id") int id,
-                               @RequestBody User user) {
+    public Message updateStatus(@PathVariable("id") int id,
+                                @RequestBody User user) {
         userService.updateStatus(id, user);
-        return "Successfully updated";
+        return new Message("Successfully updated");
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@RequestBody @Valid User user, BindingResult bindingResult) {
+    public UserDTO create(@RequestBody @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CreationException(bindingResult);
         }
-        userService.create(user);
-        return "Created successfully";
+        return userMapper.toModel(userService.create(user));
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") int id) {
         userService.delete(id);
     }
-
 }

@@ -85,7 +85,7 @@ public class UserDAO {
         return Optional.ofNullable(user);
     }
 
-    public void updateStatus(int id, String role) {
+    public void updateRole(int id, String role) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("role", role)
                 .addValue("id", id);
@@ -102,7 +102,7 @@ public class UserDAO {
         namedJdbcTemplate.update(SQL_UPDATE_ID, map);
     }
 
-    public void post(User user) {
+    public int post(User user) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("name", user.getName())
                 .addValue("password", passwordEncoder.encode(user.getPassword()))
@@ -111,6 +111,7 @@ public class UserDAO {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(SQL_POST, map, keyHolder, new String[]{"id"});
+        return keyHolder.getKey().intValue();
     }
 
     public void delete(int id) {

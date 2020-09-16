@@ -35,6 +35,7 @@ public class LineItemDAO {
 
     private final static String SQL_INSERT = "insert into lineitems(orderid, productid, quantity) values(:orderId, :productId, :quantity)";
 
+    private final static String SQL_DELETE_BY_ID = "delete from lineitems where orderid = :id";
 
     public LineItem get(int orderId, int productId){
         MapSqlParameterSource map = new MapSqlParameterSource()
@@ -80,5 +81,11 @@ public class LineItemDAO {
                 .addValue("productId", lineItem.getProductId());
 
         namedJdbcTemplate.update(SLQ_UPDATE,map);
+    }
+
+    public void deleteByOrder(int id) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", id);
+        namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
     }
 }

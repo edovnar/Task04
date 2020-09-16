@@ -1,19 +1,16 @@
 package sb.service.exception;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.validation.BindingResult;
 
-@Getter
+@Data
+@AllArgsConstructor
 public class CreationException extends RuntimeException{
 
     private BindingResult bindingResult;
-    private String message;
-
-    public CreationException(BindingResult bindingResult) {
-        this.bindingResult = bindingResult;
-    }
 
     public CreationException(String message) {
-        this.message = message;
+        super(message);
     }
 }

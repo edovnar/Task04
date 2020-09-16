@@ -35,21 +35,25 @@ public class SupplierService {
         return supplierDAO.get(id).get();
     }
 
+    public Supplier getByName(String name) {
+        return supplierDAO.getByName(name)
+                .orElseThrow(() -> new NotFoundException("No such supplier"));
+    }
+
     public List<Supplier> getByUser(int id) {
         return supplierDAO.getByUser(id);
     }
 
-    public void save(Supplier supplier) {
-        Integer userId = supplier.getUserId();
-        if (userId != null && userDAO.get(userId).isPresent()){
-            supplierDAO.post(supplier);
-        } else throw new NotFoundException("Representative is not found");
+    public Supplier save(Supplier supplier) {
 
+        int supplierId = supplierDAO.post(supplier);
+
+        return supplierDAO.get(supplierId).get();
     }
 
     public  void delete(int id) {
         supplierDAO.get(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         supplierDAO.delete(id);
     }
 

@@ -40,31 +40,43 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new NotFoundException("There is no such user"));
     }
 
-    public void updateStatus(int id, User user) {
+    public User updateStatus(int id, User user) {
         userDAO.get(id)
                 .orElseThrow(() -> new NotFoundException("No such user"));
+
         String role = user.getRole();
+
         if (role!=null && (role.equals("admin") || role.equals("user"))) {
-        userDAO.updateStatus(id, role);
+            userDAO.updateRole(id, role);
         } else {
             throw new CreationException("The role is designed incorrectly");
         }
+
+        return userDAO.get(id).get();
     }
 
-    public void create(User user) {
+    public User create(User user) {
         String role = user.getRole();
+        int userId;
+
         if (userDAO.getByEmail(user.getEmail()).isEmpty() && user.getEmail()!=null) {
             if (role.equals("admin") || role.equals("user")) {
 
-                userDAO.post(user);
+                userId = userDAO.post(user);
 
-            } else throw new CreationException("Define the role");
-        } else throw new CreationException("Invalid email");
+            } else {
+                throw new CreationException("Define the role");
+            }
+        } else {
+            throw new CreationException("Invalid email");
+        }
+
+        return userDAO.get(userId).get();
     }
 
     public void delete(int id) {
         userDAO.get(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         userDAO.delete(id);
     }
 

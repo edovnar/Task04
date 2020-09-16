@@ -1,11 +1,11 @@
 package sb.web;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.Supplier;
 import sb.utils.mapper.SupplierMapper;
 import sb.domain.dto.SupplierDTO;
-import sb.persistence.dao.SupplierDAO;
 import sb.service.SupplierService;
 import sb.service.exception.CreationException;
 
@@ -18,12 +18,10 @@ public class SupplierController {
 
     private SupplierService supplierService;
     private SupplierMapper supplierMapper;
-    private SupplierDAO supplierDAO;
 
-    public SupplierController(SupplierService supplierService, SupplierMapper supplierMapper, SupplierDAO supplierDAO) {
+    public SupplierController(SupplierService supplierService, SupplierMapper supplierMapper) {
         this.supplierService = supplierService;
         this.supplierMapper = supplierMapper;
-        this.supplierDAO = supplierDAO;
     }
 
     @GetMapping
@@ -38,14 +36,17 @@ public class SupplierController {
     }
 
     @PostMapping
-    public void create(@RequestBody @Valid Supplier supplier, BindingResult bindingResult) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public SupplierDTO create(@RequestBody @Valid Supplier supplier, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CreationException(bindingResult);
         }
         supplierService.save(supplier);
+        return supplierMapper.toModel(supplier);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") int id) {
         supplierService.delete(id);
     }

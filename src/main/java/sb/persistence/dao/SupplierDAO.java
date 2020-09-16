@@ -32,6 +32,8 @@ public class SupplierDAO {
 
     private final String SQL_SELECT_BY_USERID = "select * from suppliers where userid = :userId";
 
+    private final String SQL_SELECT_BY_NAME = "select * from suppliers where name = :name";
+
     private final String SQL_UPDATE_BY_ID = "update suppliers set name = :name," +
                                             "address = :address," +
                                             "payernumber = :payerNumber, " +
@@ -70,6 +72,17 @@ public class SupplierDAO {
         return namedJdbcTemplate.query(SQL_SELECT_BY_USERID, map, rowMapper);
     }
 
+    public Optional<Supplier> getByName(String name) {
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("name", name);
+        Supplier supplier = null;
+        try {
+            supplier = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, map, rowMapper);
+        } catch (DataAccessException ignored) {}
+
+        return Optional.ofNullable(supplier);
+    }
+
     public void update(int id, Supplier supplier) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id)
@@ -83,7 +96,7 @@ public class SupplierDAO {
         namedJdbcTemplate.update(SQL_UPDATE_BY_ID, map);
     }
 
-    public void post(Supplier supplier) {
+    public int post(Supplier supplier) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("name", supplier.getName())
                 .addValue("userId", supplier.getUserId())
@@ -94,6 +107,7 @@ public class SupplierDAO {
                 .addValue("registrationCertificateNumber", supplier.getRegistrationCertificateNumber());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
+        return keyHolder.getKey().intValue();
     }
 
     public void delete(int id) {

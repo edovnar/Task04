@@ -1,15 +1,11 @@
 package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
-import sb.domain.dto.ProductDTO;
+import sb.domain.dto.LineItemDTO;
 import sb.domain.dto.UserDTO;
-import sb.domain.entity.LineItem;
 import sb.domain.entity.Order;
-import sb.domain.dto.OrderDTO;
-import sb.domain.entity.Product;
-import sb.domain.entity.User;
+import sb.domain.dto.response.OrderDTOResponse;
 import sb.persistence.dao.LineItemDAO;
 import sb.service.ProductService;
 import sb.service.UserService;
@@ -30,38 +26,33 @@ public class OrderMapper {
     private ProductMapper productMapper;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private LineItemMapper lineItemMapper;
 
 
-    public OrderDTO toModel(Order order) {
-        List<ProductDTO> productDTOs = new ArrayList<>();
-        List<LineItem> lineItems = lineItemDAO.getByOrder(order.getId());
+    public OrderDTOResponse toModel(Order order) {
 
-        ProductDTO productDTO;
-        Product product;
-        for (LineItem lineItem : lineItems) {
-            product = productService.get(lineItem.getProductId());
-            productDTO= productMapper.toModel(product);
+        List<LineItemDTO> lineItemDTOs = lineItemMapper.allToModel(
+                lineItemDAO.getByOrder(order.getId())
+        );
 
-            productDTO.setQuantity(lineItem.getQuantity());
-            productDTOs.add(productDTO);
-        }
         UserDTO userDTO = userMapper.toModel(userService.get(order.getSubmittedBy()));
         userDTO.setId(null);
-        return new OrderDTO(
+        return new OrderDTOResponse(
                 order.getId(),
-                order.getShipped(),
+                order.getStatus(),
                 order.getSubmittedAt(),
                 userDTO,
-                productDTOs
+                lineItemDTOs
         );
     }
 
-    public List<OrderDTO> allToModel(List<Order> orders) {
-        List<OrderDTO> orderDTOs = new ArrayList<>();
+    public List<OrderDTOResponse> allToModel(List<Order> orders) {
+        List<OrderDTOResponse> orderDTOResponses = new ArrayList<>();
         for (Order order : orders) {
-            orderDTOs.add(toModel(order));
+            orderDTOResponses.add(toModel(order));
         }
-        return orderDTOs;
+        return orderDTOResponses;
     }
 
 //    public Order toEntity(OrderDTO orderDTO) {

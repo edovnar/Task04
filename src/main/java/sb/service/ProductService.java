@@ -1,13 +1,18 @@
 package sb.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import sb.domain.dto.response.ProductDTOResponse;
 import sb.domain.entity.Product;
+import sb.domain.entity.Stock;
 import sb.persistence.dao.ProductDAO;
+import sb.persistence.dao.StockDAO;
 import sb.persistence.dao.SupplierDAO;
 import sb.service.exception.NotFoundException;
+import sb.utils.mapper.ProductMapper;
 
 import java.util.List;
 
@@ -17,6 +22,10 @@ public class ProductService {
     
     private ProductDAO productDAO;
     private SupplierDAO supplierDAO;
+    @Autowired
+    private StockDAO stockDAO;
+    @Autowired
+    private ProductMapper productMapper;
 
     public ProductService(ProductDAO productDAO, SupplierDAO supplierDAO) {
         this.productDAO = productDAO;
@@ -37,21 +46,31 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException("No product on stock"));
     }
 
-    public void save(Product product) {
-        supplierDAO.get(product.getSupplierId())
-                .orElseThrow(() -> new NotFoundException("No such supplier"));
-        productDAO.post(product);
+    public Product save(Product product) {
+//        Supplier supplier = supplierDAO.getByName(product.getSupplierName())
+//                .orElseThrow(() -> new NotFoundException("No such supplier"));
+
+//        Product product = productMapper.toEntity(productDTOResponse);
+
+        int productId = productDAO.post(product);
+        stockDAO.post(new Stock(productId, 1));
+        return productDAO.get(productId).get();
     }
 
-    public void update(int id, Product product) {
+    public Product update(int id, Product product) {
         productDAO.get(id)
-                .orElseThrow(() -> new NotFoundException("No such prduct"));
+                .orElseThrow(() -> new NotFoundException("No such product"));
+
         productDAO.update(id, product);
+
+        return productDAO.get(id).get();
     }
 
-    public  void delete(int id) {
+    public void delete(int id) {
         productDAO.get(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         productDAO.delete(id);
+        stockDAO.delete(id);
     }
 }

@@ -1,6 +1,7 @@
 package sb.domain.entity;
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
@@ -11,18 +12,17 @@ import java.sql.Date;
 @Data
 public class Supplier extends BaseEntity {
 
-    @Positive
     private Integer userId;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank
     private String name;
 
     private String address;
 
-    @Range(min = 9999, max = 1000000000, message = "Payer number's length should be between 5 and 9")
+    @Range(min = 9999, max = 1000000000)
     private Integer payerNumber;
 
-    @NotNull(message = "Certificate can't be null")
+    @NotNull
     @Positive
     private int registrationCertificateNumber;
     private Date registrationDate;

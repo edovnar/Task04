@@ -44,7 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+
                 .antMatchers("/users/**").hasAuthority("admin")
+
                 .antMatchers(HttpMethod.DELETE,"/suppliers/**").hasAuthority("admin")
                 .antMatchers(HttpMethod.PUT,"/suppliers/**").hasAuthority("admin")
                 .antMatchers(HttpMethod.POST,"/suppliers/**").hasAuthority("admin")
@@ -53,11 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT,"/products/**").hasAuthority("admin")
                 .antMatchers(HttpMethod.POST,"/products/**").hasAuthority("admin")
 
+                .antMatchers(HttpMethod.PATCH, "/orders/**").hasAuthority("admin")
 
-                .antMatchers(HttpMethod.GET, "/suppliers/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .and()
-               .httpBasic();
+                .httpBasic();
     }
 
     @Bean

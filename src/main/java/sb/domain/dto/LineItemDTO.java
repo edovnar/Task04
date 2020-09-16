@@ -3,6 +3,7 @@ package sb.domain.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import sb.domain.dto.response.ProductDTOResponse;
 
 import javax.validation.constraints.Positive;
 
@@ -12,8 +13,7 @@ public class LineItemDTO {
 
     @JsonIgnore
     private int orderId;
-    private ProductDTO product;
 
-    @Positive
+    private ProductDTOResponse product;
     private int quantity;
 }

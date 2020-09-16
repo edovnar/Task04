@@ -2,8 +2,10 @@ package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sb.domain.dto.request.ProductDTORequest;
 import sb.domain.entity.Product;
-import sb.domain.dto.ProductDTO;
+import sb.domain.dto.response.ProductDTOResponse;
+import sb.domain.entity.Stock;
 import sb.persistence.dao.StockDAO;
 import sb.service.SupplierService;
 
@@ -19,10 +21,12 @@ public class ProductMapper {
     private StockDAO stockDAO;
 
 
-    public ProductDTO toModel(Product product) {
+    public ProductDTOResponse toModel(Product product) {
 
         Integer supplierId = product.getSupplierId();
         String supplierName;
+
+        Stock stock = stockDAO.get(product.getId()).get();
 
         if(supplierId == null) {
             supplierName = "Supplier doesn't exists anymore";
@@ -30,20 +34,25 @@ public class ProductMapper {
             supplierName = supplierService.get(supplierId).getName();
         }
 
-        return new ProductDTO(
+        return new ProductDTOResponse(
                 product.getId(),
                 product.getName(),
                 supplierName,
-                null
+                stock.getQuantity()
 
         );
     }
 
-    public List<ProductDTO> allToModel(List<Product> products) {
-        List<ProductDTO> productDTOs = new ArrayList<>();
+    public List<ProductDTOResponse> allToModel(List<Product> products) {
+        List<ProductDTOResponse> productDTOResponses = new ArrayList<>();
         for(Product product : products) {
-            productDTOs.add(toModel(product));
+            productDTOResponses.add(toModel(product));
         }
-        return productDTOs;
+        return productDTOResponses;
+    }
+
+    public Product toEntity(ProductDTORequest productDTORequest) {
+
+        return new Product(productDTORequest.getName(), productDTORequest.getSupplierId());
     }
 }

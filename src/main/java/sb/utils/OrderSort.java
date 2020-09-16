@@ -1,7 +1,7 @@
 package sb.utils;
 
 import org.springframework.stereotype.Component;
-import sb.domain.dto.OrderDTO;
+import sb.domain.dto.response.OrderDTOResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderSort {
 
-    public List<OrderDTO> sort (String sortBy, String status, List<OrderDTO> orders) {
+    public List<OrderDTOResponse> sort (String sortBy, String status, List<OrderDTOResponse> orders) {
 
         if(sortBy!=null) {
             if (sortBy.equals("_id")) {
@@ -25,7 +25,7 @@ public class OrderSort {
 
         if (status!=null && (status.equals("true") || status.equals("false"))) {
             orders = orders.stream()
-                    .filter(order -> order.getShipped().equals(status))
+                    .filter(order -> order.getStatus().equals(status))
                     .collect(Collectors.toList());
             return orders;
         }

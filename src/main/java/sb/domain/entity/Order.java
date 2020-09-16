@@ -12,8 +12,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class Order extends BaseEntity {
 
-    @NotBlank(message = "Status is required")
-    private String shipped;
+    @NotBlank
+    private String status;
 
     private Integer submittedBy;
     private Date submittedAt;

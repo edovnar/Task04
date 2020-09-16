@@ -32,11 +32,11 @@ public class OrderDAO{
     private final String SQL_SELECT_BY_USER = "select * from orders where submitted_by = :submittedBy";
 
     private final String SQL_INSERT =
-            "insert into orders(shipped, submitted_by, submitted_at, updated_at) values (:shipped, :submittedBy, :submittedAt, :updatedAt)";
+            "insert into orders(status, submitted_by, submitted_at, updated_at) values (:status, :submittedBy, :submittedAt, :updatedAt)";
 
     private final String SQL_DELETE_BY_ID = "delete from orders where id = :id";
 
-    private final String SQL_UPDATE_STATUS_BY_ID = "update orders set shipped = :shipped, updated_at = :updatedAt where id = :id";
+    private final String SQL_UPDATE_STATUS_BY_ID = "update orders set status = :status, updated_at = :updatedAt where id = :id";
 
 
     public List<Order> getAll() {
@@ -64,7 +64,7 @@ public class OrderDAO{
 
     public void update(String status, int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("shipped", status)
+                .addValue("status", status)
                 .addValue("updatedAt", new Date())
                 .addValue("id", id);
        namedJdbcTemplate.update(SQL_UPDATE_STATUS_BY_ID, map);
@@ -72,7 +72,7 @@ public class OrderDAO{
 
     public int post(User user) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("shipped", false)
+                .addValue("status", "unshipped")
                 .addValue("submittedBy", user.getId())
                 .addValue("submittedAt", new Date())
                 .addValue("updatedAt", null);
