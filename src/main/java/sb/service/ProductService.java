@@ -1,6 +1,8 @@
 package sb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import sb.persistence.dao.ProductDAO;
 import sb.persistence.dao.StockDAO;
 import sb.persistence.dao.SupplierDAO;
 import sb.service.exception.NotFoundException;
+import sb.utils.ListToPageConverter;
 import sb.utils.mapper.ProductMapper;
 
 import java.util.List;
@@ -32,8 +35,9 @@ public class ProductService {
         this.supplierDAO = supplierDAO;
     }
 
-    public List<Product> getAll() {
-        return productDAO.getAll();
+    public Page<Product> getAll(Pageable pageable) {
+        ListToPageConverter<Product> converter = new ListToPageConverter<>();
+        return converter.toPage(productDAO.getAll(), pageable);
     }
 
     public Product get(int id) {

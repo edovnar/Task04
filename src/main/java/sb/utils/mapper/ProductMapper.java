@@ -1,6 +1,7 @@
 package sb.utils.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import sb.domain.dto.request.ProductDTORequest;
 import sb.domain.entity.Product;
@@ -43,7 +44,7 @@ public class ProductMapper {
         );
     }
 
-    public List<ProductDTOResponse> allToModel(List<Product> products) {
+    public List<ProductDTOResponse> allToModel(Page<Product> products) {
         List<ProductDTOResponse> productDTOResponses = new ArrayList<>();
         for(Product product : products) {
             productDTOResponses.add(toModel(product));

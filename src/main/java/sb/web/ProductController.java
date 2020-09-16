@@ -1,5 +1,9 @@
 package sb.web;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +30,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDTOResponse> getAll() {
-        return productMapper.allToModel(productService.getAll());
+    public List<ProductDTOResponse> getAll(@PageableDefault(sort = ("name")) Pageable pageable) {
+       return productMapper.allToModel(productService.getAll(pageable));
     }
 
     @GetMapping("/{id}")
