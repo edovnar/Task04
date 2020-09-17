@@ -35,9 +35,9 @@ public class ProductService {
     }
 
     public Product get(int id) {
-        productDAO.get(id).orElseThrow(() -> new NotFoundException("No product, dear"));
 
-        return productDAO.get(id).get();
+        return productDAO.get(id)
+                .orElseThrow(() -> new NotFoundException("No product, dear"));
     }
 
     public Product save(Product product) {
