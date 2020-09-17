@@ -1,14 +1,13 @@
 package sb.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.User;
-import sb.utils.Message;
+import sb.persistence.dao.UserDAO;
 import sb.utils.mapper.UserMapper;
 import sb.domain.dto.UserDTO;
 import sb.service.UserService;
-import sb.service.exception.CreationException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -36,20 +35,15 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public Message updateStatus(@PathVariable("id") int id,
-                                @RequestBody User user) {
-        userService.updateStatus(id, user);
+    public UserDTO updateRole(@PathVariable("id") int id,
+                                @RequestBody UserDTO userDTO) {
 
-        return new Message("Successfully updated");
+        return userMapper.toModel(userService.updateRole(id, userDTO.getRole()));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@RequestBody @Valid User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new CreationException(bindingResult);
-        }
-
+    public UserDTO create(@RequestBody @Valid User user) {
         return userMapper.toModel(userService.create(user));
     }
 

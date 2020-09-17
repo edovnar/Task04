@@ -29,13 +29,17 @@ public class UserDAO {
         rowMapper = new BeanPropertyRowMapper<>(User.class);
     }
 
-    private final String SQL_SELECT_ALL = "select * from users ";
+    private final String SQL_SELECT_ALL = "select id, name, password, role, email " +
+                                            "from users";
 
-    private final String SQL_SELECT_BY_ID = "select * from users where id = :id";
+    private final String SQL_SELECT_BY_ID = "select id, name, password, role, email " +
+                                            "from users where id = :id";
 
-    private final String SQL_SELECT_BY_NAME = "select * from users where name = :name";
+    private final String SQL_SELECT_BY_NAME = "select id, name, password, role, email " +
+                                                "from users where name = :name";
 
-    private final String SQL_SELECT_BY_EMAIL = "select * from users where email = :email";
+    private final String SQL_SELECT_BY_EMAIL = "select id, name, password, role, email " +
+                                                "from users where email = :email";
 
     private final String SQL_UPDATE_ROLE_BY_ID = "update users set role = :role where id = :id";
 

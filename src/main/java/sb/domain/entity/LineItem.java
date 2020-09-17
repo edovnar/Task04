@@ -18,7 +18,7 @@ public class LineItem {
 
     private Integer productId;
 
-    @Positive
+    @Positive (message = "Quantity must be positive")
     private int quantity;
 
     @Override public boolean equals(Object o) {

@@ -4,26 +4,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import sb.domain.entity.Product;
 import sb.domain.entity.Stock;
 import sb.persistence.dao.ProductDAO;
 import sb.persistence.dao.StockDAO;
+import sb.persistence.dao.SupplierDAO;
 import sb.service.exception.NotFoundException;
 import sb.utils.ListToPageConverter;
 
 @Service
-@Transactional
 public class ProductService {
 
-    private final ProductDAO productDAO;
-    private final StockDAO stockDAO;
+    private ProductDAO productDAO;
+    private StockDAO stockDAO;
+    private SupplierDAO supplierDAO;
 
-    public ProductService(ProductDAO productDAO, StockDAO stockDAO) {
+    public ProductService(ProductDAO productDAO, StockDAO stockDAO, SupplierDAO supplierDAO) {
         this.productDAO = productDAO;
         this.stockDAO = stockDAO;
+        this.supplierDAO = supplierDAO;
     }
 
 
@@ -39,12 +40,10 @@ public class ProductService {
         return productDAO.get(id).get();
     }
 
-    public Product getByStock(int id) {
-        return productDAO.getByStock(id)
-                .orElseThrow(() -> new NotFoundException("No product on stock"));
-    }
-
     public Product save(Product product) {
+        supplierDAO.get(product.getSupplierId())
+                .orElseThrow(() -> new NotFoundException("No such supplier"));
+
         int productId = productDAO.post(product);
         stockDAO.post(new Stock(productId, 1));
 

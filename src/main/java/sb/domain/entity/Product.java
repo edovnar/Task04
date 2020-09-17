@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class Product extends BaseEntity {
 
-    @NotBlank
+    @NotBlank(message = "Name can not be blank")
     private String name;
 
     private Integer supplierId;

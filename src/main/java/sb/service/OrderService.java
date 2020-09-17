@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class OrderService {
 
     private OrderDAO orderDAO;
@@ -59,6 +58,7 @@ public class OrderService {
     }
 
 
+    @Transactional
     public Order save(OrderDTORequest orderDTORequest) {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = userDAO.getByName(context.getAuthentication().getName())
@@ -136,6 +136,7 @@ public class OrderService {
     }
 
 
+    @Transactional
     public Order update(int orderId, OrderDTORequest orderDTORequest) {
 
         if(orderDAO.get(orderId).isEmpty()) {
@@ -158,47 +159,14 @@ public class OrderService {
 
         lineItemDAO.deleteByOrder(orderId);
 
-        for (LineItem lineItem : orderDTORequest.getLineItems()) {
-
-            Integer productId = lineItem.getProductId();
-
-            if(productId == null) {
-                throw new BadOrderException(lineItem, "Specify product");
-            }
-
-            if(productDAO.get(productId).isEmpty()) {
-                throw new BadOrderException(lineItem, "No such product");
-            }
-
-            Stock stock = stockDAO.get(productId).get();
-
-            int productQuantity = lineItem.getQuantity();
-            int stockQuantity = stock.getQuantity();
-
-            if(productQuantity < 1) {
-                throw new BadOrderException(lineItem, "Quantity should be positive");
-            }
-
-            if(stockQuantity < productQuantity) {
-                throw new BadOrderException(lineItem, "Don't have so many on the stock");
-            }
-
-            stock.setQuantity(
-                    stockQuantity - productQuantity
-            );
-            stockDAO.update(stock);
-
-            lineItem.setOrderId(orderId);
-            lineItemDAO.post(lineItem);
-        }
-
-        return orderDAO.get(orderId).get();
+        return save(orderDTORequest);
     }
 
 
     public void delete(int id) {
         orderDAO.get(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         lineItemDAO.deleteByOrder(id);
         orderDAO.delete(id);
     }

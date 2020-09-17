@@ -1,11 +1,9 @@
 package sb.domain.entity;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Data
@@ -13,17 +11,18 @@ public class Supplier extends BaseEntity {
 
     private Integer userId;
 
-    @NotBlank
+    @NotBlank(message = "Name can't be blank")
     private String name;
 
     private String address;
 
-    @Range(min = 9999, max = 1000000000)
-    private Integer payerNumber;
+    @NotBlank(message = "Payer number is required")
+    @Size(min = 5, max = 15, message = "Length must be between 5 and 15")
+    private String payerNumber;
 
-    @NotNull
-    @Positive
-    private int registrationCertificateNumber;
+    @NotBlank(message = "Registration certificate number is required")
+    @Size(min = 5, max = 15, message = "Length must be between 5 and 15")
+    private String registrationCertificateNumber;
 
     private Date registrationDate;
     private String phoneNumber;

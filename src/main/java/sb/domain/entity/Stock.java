@@ -13,6 +13,6 @@ public class Stock {
 
     private Integer id;
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "Quantity can't be negative")
     private Integer quantity;
 }

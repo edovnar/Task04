@@ -21,21 +21,26 @@ public class LineItemDAO {
         rowMapper = new BeanPropertyRowMapper<>(LineItem.class);
     }
 
-    private final static String SQL_SELECT_BY_ORDERID_PRODUCTID =
-            "select * from lineitems where orderid = :orderId " +
-                    "and productid = :productId";
+    private final static String SQL_SELECT_BY_ORDERID_PRODUCTID = "select order_id, product_id, quantity " +
+                                                                    "from lineitems " +
+                                                                    "where order_id = :orderId and product_id = :productId";
 
-    private final static String SQL_SELECT_ALL = "select * from lineitems";
+    private final static String SQL_SELECT_ALL = "select order_id, product_id, quantity " +
+                                                    "from lineitems";
 
-    private final static String SQL_SELECT_BY_ORDER = "select * from lineitems where orderid = :orderId";
+    private final static String SQL_SELECT_BY_ORDER = "select order_id, product_id, quantity " +
+                                                        "from lineitems where order_id = :orderId";
 
-    private final static String SQL_SELECT_BY_PRODUCT = "select * from lineitems where productid = :productId";
+    private final static String SQL_SELECT_BY_PRODUCT = "select order_id, product_id, quantity " +
+                                                        "from lineitems where product_id = :productId";
 
-    private final static String SLQ_UPDATE = "update lineitems set quantity = :quantity where orderid = :orderId and productid = :productId";
+    private final static String SLQ_UPDATE = "update lineitems set quantity = :quantity " +
+                                                "where order_id = :orderId and product_id = :productId";
 
-    private final static String SQL_INSERT = "insert into lineitems(orderid, productid, quantity) values(:orderId, :productId, :quantity)";
+    private final static String SQL_INSERT = "insert into lineitems(order_id, product_id, quantity) " +
+                                                "values(:orderId, :productId, :quantity)";
 
-    private final static String SQL_DELETE_BY_ID = "delete from lineitems where orderid = :id";
+    private final static String SQL_DELETE_BY_ID = "delete from lineitems where order_id = :id";
 
     public LineItem get(int orderId, int productId){
         MapSqlParameterSource map = new MapSqlParameterSource()

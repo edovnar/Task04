@@ -22,17 +22,20 @@ public class ProductDAO {
         rowMapper = new BeanPropertyRowMapper<>(Product.class);
     }
 
-    private final String SQL_SELECT_BY_ID = "select * from products where id = :id";
+    private final String SQL_SELECT_BY_ID = "select id, supplier_id, name " +
+                                            "from products where id = :id";
 
-    private final String SQL_SELECT_ALL = "select * from products";
+    private final String SQL_SELECT_ALL = "select id, supplier_id, name " +
+                                            "from products";
 
-    private final String SQL_SELECT_BY_NAME = "select * from products where name = :name";
+    private final String SQL_SELECT_BY_NAME = "select id, supplier_id, name " +
+                                                "from products where name = :name";
 
-    private final String SQL_SELECT_BY_SUPPLIERID = "select * from products where supplierid = :supplierId";
+    private final String SQL_SELECT_BY_SUPPLIERID = "select id, supplier_id, name " +
+                                                    "from products where supplier_id = :supplierId";
 
-    private final String SQL_SELECT_BY_STOCKID = "select * from products where stockid = :stockId";
-
-    private final String SQL_POST = "insert into products(supplierId, name) values (:supplierId, :name)";
+    private final String SQL_POST = "insert into products(supplier_id, name) " +
+                                    "values (:supplierId, :name)";
 
     private final String SQL_DELETE_BY_ID = "delete from products where id = :id";
 
@@ -62,20 +65,6 @@ public class ProductDAO {
 
         return Optional.ofNullable(product);
     }
-
-
-    public Optional<Product> getByStock(int id){
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("stockId", id);
-
-        Product product = null;
-        try {
-            product = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_STOCKID, map, rowMapper);
-        } catch (DataAccessException ignored){}
-
-        return Optional.ofNullable(product);
-    }
-
 
     public List<Product> getAll(){
 

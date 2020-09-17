@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import sb.domain.entity.User;
 import sb.persistence.dao.UserDAO;
@@ -17,7 +16,6 @@ import sb.service.exception.NotFoundException;
 import java.util.List;
 
 @Service
-@Transactional
 public class UserService implements UserDetailsService {
 
     private UserDAO userDAO;
@@ -25,7 +23,6 @@ public class UserService implements UserDetailsService {
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
-
 
     public List<User> getAll(){
         return userDAO.getAll();
@@ -41,13 +38,11 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new NotFoundException("There is no such user"));
     }
 
-    public User updateStatus(int id, User user) {
+    public User updateRole(int id, String role) {
         userDAO.get(id)
                 .orElseThrow(() -> new NotFoundException("No such user"));
 
-        String role = user.getRole();
-
-        if (role!=null && (role.equals("admin") || role.equals("user"))) {
+        if (role != null && (role.equals("admin") || role.equals("user"))) {
             userDAO.updateRole(id, role);
         } else {
             throw new CreationException("The role is designed incorrectly");
@@ -60,14 +55,18 @@ public class UserService implements UserDetailsService {
         String role = user.getRole();
         int userId;
 
-        if (userDAO.getByEmail(user.getEmail()).isEmpty() && user.getEmail()!=null) {
-            if (role.equals("admin") || role.equals("user")) {
-                userId = userDAO.post(user);
-            } else {
-                throw new CreationException("Define the role");
-            }
+        if(userDAO.getByName(user.getName()).isPresent()) {
+           throw new CreationException("User with this name already exists");
+        }
+
+        if(userDAO.getByEmail(user.getEmail()).isPresent()) {
+           throw new CreationException("User with this email already exists");
+        }
+
+        if (role.equals("admin") || role.equals("user")) {
+            userId = userDAO.post(user);
         } else {
-            throw new CreationException("Invalid email");
+            throw new CreationException("Define the role");
         }
 
         return userDAO.get(userId).get();

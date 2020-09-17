@@ -4,7 +4,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sb.domain.dto.request.OrderDTORequest;
@@ -14,7 +13,6 @@ import sb.utils.mapper.OrderMapper;
 import sb.domain.dto.response.OrderDTOResponse;
 import sb.service.OrderService;
 import sb.service.UserService;
-import sb.service.exception.CreationException;
 import sb.utils.OrderSort;
 
 import javax.validation.Valid;
@@ -50,10 +48,8 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDTOResponse create(@RequestBody @Valid OrderDTORequest orderDTORequest, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new CreationException(bindingResult);
-        }
+    public OrderDTOResponse create(@RequestBody @Valid OrderDTORequest orderDTORequest) {
+
         Order order = orderService.save(orderDTORequest);
 
         return orderMapper.toModel(order);

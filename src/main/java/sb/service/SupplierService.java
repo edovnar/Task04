@@ -1,23 +1,25 @@
 package sb.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import sb.domain.entity.Supplier;
 import sb.persistence.dao.SupplierDAO;
+import sb.persistence.dao.UserDAO;
 import sb.service.exception.NotFoundException;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class SupplierService {
 
     private SupplierDAO supplierDAO;
+    private UserDAO userDAO;
 
-    public SupplierService(SupplierDAO supplierDAO) {
+    public SupplierService(SupplierDAO supplierDAO, UserDAO userDAO) {
         this.supplierDAO = supplierDAO;
+        this.userDAO = userDAO;
     }
 
 
@@ -30,6 +32,7 @@ public class SupplierService {
         if(supplierDAO.get(id).isEmpty()) {
             throw new NotFoundException("No such supplier");
         }
+
         return supplierDAO.get(id).get();
     }
 
@@ -59,9 +62,16 @@ public class SupplierService {
     }
 
 
-    public void update(int id, Supplier supplier){
+    public Supplier update(int id, Supplier supplier){
         supplierDAO.get(id)
                 .orElseThrow(() -> new NotFoundException("No such supplier"));
+
+        if(supplier.getUserId() != null && userDAO.get(supplier.getUserId()).isEmpty()) {
+           throw new NotFoundException("No such representative");
+        }
+
         supplierDAO.update(id, supplier);
+
+        return supplierDAO.get(id).get();
     }
 }

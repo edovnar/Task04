@@ -20,9 +20,9 @@ public class StockDAO {
         rowMapper = new BeanPropertyRowMapper<>(Stock.class);
     }
 
-    private final String SQL_SELECT_ALL = "select * from stocks ";
+    private final String SQL_SELECT_ALL = "select id, quantity from stocks ";
 
-    private final String SQL_SELECT_BY_ID = "select * from stocks where id = :id";
+    private final String SQL_SELECT_BY_ID = "select id, quantity from stocks where id = :id";
 
     private final String SQL_UPDATE_BY_ID = "update stocks set quantity = :quantity where id = :id";
 

@@ -25,23 +25,27 @@ public class SupplierDAO {
         rowMapper = new BeanPropertyRowMapper<>(Supplier.class);
     }
 
-    private final String SQL_SELECT_ALL = "select * from suppliers ";
+    private final String SQL_SELECT_ALL = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                            "from suppliers ";
 
-    private final String SQL_SELECT_BY_ID = "select * from suppliers where id = :id";
+    private final String SQL_SELECT_BY_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                            "from suppliers where id = :id";
 
-    private final String SQL_SELECT_BY_USERID = "select * from suppliers where userid = :userId";
+    private final String SQL_SELECT_BY_USERID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                                "from suppliers where user_id = :userId";
 
-    private final String SQL_SELECT_BY_NAME = "select * from suppliers where name = :name";
+    private final String SQL_SELECT_BY_NAME = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                                "from suppliers where name = :name";
 
     private final String SQL_UPDATE_BY_ID = "update suppliers set name = :name," +
                                             "address = :address," +
-                                            "payernumber = :payerNumber, " +
-                                            "registrationcertificatenumber = :registrationCertificateNumber," +
-                                            "registrationdate = :registrationDate," +
-                                            "phonenumber = :phoneNumber, " +
-                                            "userid = :userId where id = :id";
+                                            "payer_number = :payerNumber, " +
+                                            "registration_certificate_number = :registrationCertificateNumber," +
+                                            "registration_date = :registrationDate," +
+                                            "phone_number = :phoneNumber, " +
+                                            "user_id = :userId where id = :id";
 
-    private final String POST = "insert into suppliers(userid, name, address, payernumber, registrationcertificatenumber, registrationdate, phonenumber) " +
+    private final String POST = "insert into suppliers(user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number) " +
             "values(:userId, :name, :address, :payerNumber, :registrationCertificateNumber, :registrationDate, :phoneNumber)";
 
     private final String SQL_DELETE_BY_ID = "delete from suppliers where id = :id";

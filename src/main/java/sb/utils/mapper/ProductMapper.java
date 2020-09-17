@@ -33,7 +33,7 @@ public class ProductMapper {
         Stock stock = stockDAO.get(product.getId()).get();
 
         if(supplierId == null) {
-            supplierName = "Supplier doesn't exists anymore";
+            supplierName = null;
         } else {
             supplierName = supplierService.get(supplierId).getName();
         }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class OrderDAO{
+public class OrderDAO {
     
     private NamedParameterJdbcTemplate namedJdbcTemplate;
     private BeanPropertyRowMapper<Order> rowMapper;
@@ -25,18 +25,22 @@ public class OrderDAO{
         rowMapper = new BeanPropertyRowMapper<>(Order.class);
     }
 
-    private final String SQL_SELECT_ALL = "select * from orders";
+    private final String SQL_SELECT_ALL = "select id, status, submitted_by, submitted_at, updated_at " +
+                                            "from orders";
 
-    private final String SQL_SELECT_BY_ID = "select * from orders where id = :id";
+    private final String SQL_SELECT_BY_ID = "select id, status, submitted_by, submitted_at, updated_at " +
+                                            "from orders where id = :id";
 
-    private final String SQL_SELECT_BY_USER = "select * from orders where submitted_by = :submittedBy";
+    private final String SQL_SELECT_BY_USER = "select id, status, submitted_by, submitted_at, updated_at " +
+                                                "from orders where submitted_by = :submittedBy";
 
-    private final String SQL_INSERT =
-            "insert into orders(status, submitted_by, submitted_at, updated_at) values (:status, :submittedBy, :submittedAt, :updatedAt)";
+    private final String SQL_INSERT = "insert into orders(status, submitted_by, submitted_at, updated_at) " +
+                                        "values (:status, :submittedBy, :submittedAt, :updatedAt)";
 
     private final String SQL_DELETE_BY_ID = "delete from orders where id = :id";
 
-    private final String SQL_UPDATE_STATUS_BY_ID = "update orders set status = :status, updated_at = :updatedAt where id = :id";
+    private final String SQL_UPDATE_STATUS_BY_ID = "update orders set status = :status, updated_at = :updatedAt " +
+                                                    "where id = :id";
 
 
     public List<Order> getAll() {

@@ -1,13 +1,11 @@
 package sb.web;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.entity.Supplier;
 import sb.utils.mapper.SupplierMapper;
 import sb.domain.dto.SupplierDTO;
 import sb.service.SupplierService;
-import sb.service.exception.CreationException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -36,13 +34,9 @@ public class SupplierController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SupplierDTO create(@RequestBody @Valid Supplier supplier, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new CreationException(bindingResult);
-        }
-        supplierService.save(supplier);
+    public SupplierDTO create(@RequestBody @Valid Supplier supplier) {
 
-        return supplierMapper.toModel(supplier);
+        return supplierMapper.toModel(supplierService.save(supplier));
     }
 
     @DeleteMapping("/{id}")
@@ -52,10 +46,8 @@ public class SupplierController {
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable("id") int id, @RequestBody @Valid Supplier supplier, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new CreationException(bindingResult);
-        }
-        supplierService.update(id, supplier);
+    public SupplierDTO update(@PathVariable("id") int id, @RequestBody @Valid Supplier supplier) {
+
+        return supplierMapper.toModel(supplierService.update(id, supplier));
     }
 }

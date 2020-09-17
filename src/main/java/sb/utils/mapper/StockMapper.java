@@ -15,7 +15,7 @@ public class StockMapper {
 
     public StockDTO toModel(Stock stock) {
         return new StockDTO(
-                productService.getByStock(stock.getId()).getName(),
+                productService.get(stock.getId()).getName(),
                 stock.getQuantity()
         );
     }
