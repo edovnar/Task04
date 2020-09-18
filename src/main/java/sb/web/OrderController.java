@@ -50,7 +50,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDTOResponse create(@RequestBody @Valid OrderDTORequest orderDTORequest) {
 
-        Order order = orderService.save(orderDTORequest);
+        Order order = orderService.create(orderDTORequest);
 
         return orderMapper.toModel(order);
     }

@@ -59,7 +59,7 @@ public class OrderService {
 
 
     @Transactional
-    public Order save(OrderDTORequest orderDTORequest) {
+    public Order create(OrderDTORequest orderDTORequest) {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = userDAO.getByName(context.getAuthentication().getName())
                 .orElseThrow(() -> new NotFoundException("No such user")
@@ -71,6 +71,67 @@ public class OrderService {
         Optional<Stock> stock;
 
         int orderId = orderDAO.post(user);
+
+        return save(orderId, orderDTORequest);
+    }
+
+
+    public Order updateStatus(String status, int orderId) {
+
+        orderDAO.get(orderId).orElseThrow(
+                () -> new NotFoundException("No such order")
+        );
+
+        if(status != null && (status.equals("shipped") || status.equals("unshipped"))){
+            orderDAO.update(status, orderId);
+        } else {
+            throw new CreationException("Wrong status");
+        }
+
+        return orderDAO.get(orderId).get();
+    }
+
+
+    @Transactional
+    public Order update(int orderId, OrderDTORequest orderDTORequest) {
+
+        if(orderDAO.get(orderId).isEmpty()) {
+            throw new NotFoundException("No such order");
+        }
+
+        if(orderDAO.get(orderId).get().getStatus().equals("shipped")) {
+            throw new NotFoundException("Can't update shipped order");
+        }
+
+        for (LineItem lineItem : lineItemDAO.getByOrder(orderId)) {
+
+            int productId = lineItem.getProductId();
+            Stock stock = stockDAO.get(productId).get();
+            int stockQuantity = stock.getQuantity();
+
+            stock.setQuantity(stockQuantity + lineItem.getQuantity());
+            stockDAO.update(stock);
+        }
+
+        lineItemDAO.deleteByOrder(orderId);
+
+        return save(orderId, orderDTORequest);
+    }
+
+
+    public void delete(int id) {
+        orderDAO.get(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        lineItemDAO.deleteByOrder(id);
+        orderDAO.delete(id);
+    }
+
+    public Order save(int orderId, OrderDTORequest orderDTORequest) {
+        List<LineItem> lineItems = orderDTORequest.getLineItems();
+
+        Optional<Product> product;
+        Optional<Stock> stock;
 
         List<LineItem> lineItemSet = new ArrayList<>();
 
@@ -117,57 +178,5 @@ public class OrderService {
             }
         }
         return orderDAO.get(orderId).get();
-    }
-
-
-    public Order updateStatus(String status, int orderId) {
-
-        orderDAO.get(orderId).orElseThrow(
-                () -> new NotFoundException("No such order")
-        );
-
-        if(status != null && (status.equals("shipped") || status.equals("unshipped"))){
-            orderDAO.update(status, orderId);
-        } else {
-            throw new CreationException("Wrong status");
-        }
-
-        return orderDAO.get(orderId).get();
-    }
-
-
-    @Transactional
-    public Order update(int orderId, OrderDTORequest orderDTORequest) {
-
-        if(orderDAO.get(orderId).isEmpty()) {
-            throw new NotFoundException("No such order");
-        }
-
-        if(orderDAO.get(orderId).get().getStatus().equals("shipped")) {
-            throw new NotFoundException("Can't update shipped order");
-        }
-
-        for (LineItem lineItem : lineItemDAO.getByOrder(orderId)) {
-
-            int productId = lineItem.getProductId();
-            Stock stock = stockDAO.get(productId).get();
-            int stockQuantity = stock.getQuantity();
-
-            stock.setQuantity(stockQuantity + lineItem.getQuantity());
-            stockDAO.update(stock);
-        }
-
-        lineItemDAO.deleteByOrder(orderId);
-
-        return save(orderDTORequest);
-    }
-
-
-    public void delete(int id) {
-        orderDAO.get(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        lineItemDAO.deleteByOrder(id);
-        orderDAO.delete(id);
     }
 }
