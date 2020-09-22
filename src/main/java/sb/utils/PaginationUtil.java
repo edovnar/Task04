@@ -20,7 +20,11 @@ public class PaginationUtil {
             direction = sort[1];
         }
 
-        return query + String.format(" order by %s %s limit %s offset %s",
+        if (!orderBy.equals("UNSORTED")) {
+            query = query + " order by ";
+        }
+
+        return query + String.format(" %s %s limit %s offset %s",
                 orderBy, direction, pageable.getPageSize(), pageable.getOffset());
     }
 }

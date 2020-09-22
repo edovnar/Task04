@@ -26,19 +26,19 @@ public class SupplierDAO {
         ROW_MAPPER = new BeanPropertyRowMapper<>(Supplier.class);
     }
 
-    private final String SQL_SELECT_ALL = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_ALL = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
                                             "from suppliers ";
 
-    private final String SQL_SELECT_BY_SUPPLIER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_BY_SUPPLIER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
                                                     "from suppliers where id = :id";
 
-    private final String SQL_SELECT_BY_USER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_BY_USER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
                                                     "from suppliers where user_id = :userId";
 
-    private final String SQL_SELECT_BY_SUPPLIER_NAME = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_BY_SUPPLIER_NAME = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
                                                         "from suppliers where name = :name";
 
-    private final String SQL_UPDATE_BY_SUPPLIER_ID = "update suppliers set name = :name," +
+    private final static String SQL_UPDATE_BY_SUPPLIER_ID = "update suppliers set name = :name," +
                                                     "address = :address," +
                                                     "payer_number = :payerNumber, " +
                                                     "registration_certificate_number = :registrationCertificateNumber," +

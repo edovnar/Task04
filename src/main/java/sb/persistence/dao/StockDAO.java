@@ -23,15 +23,15 @@ public class StockDAO {
         ROW_MAPPER = new BeanPropertyRowMapper<>(Stock.class);
     }
 
-    private final String SQL_SELECT_ALL = "select id, quantity from stocks ";
+    private final static String SQL_SELECT_ALL = "select id, quantity from stocks ";
 
-    private final String SQL_SELECT_BY_STOCK_ID = "select id, quantity from stocks where id = :id";
+    private final static String SQL_SELECT_BY_STOCK_ID = "select id, quantity from stocks where id = :id";
 
-    private final String SQL_UPDATE_BY_STOCK_ID = "update stocks set quantity = :quantity where id = :id";
+    private final static String SQL_UPDATE_BY_STOCK_ID = "update stocks set quantity = :quantity where id = :id";
 
-    private final String SQL_POST = "insert into stocks(id, quantity) values(:id, :quantity)";
+    private final static String SQL_POST = "insert into stocks(id, quantity) values(:id, :quantity)";
 
-    private final String SQL_DELETE_BY_STOCK_ID = "delete from stocks where id = :id";
+    private final static String SQL_DELETE_BY_STOCK_ID = "delete from stocks where id = :id";
 
     public List<Stock> getAll() {
         return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_ALL, ROW_MAPPER);

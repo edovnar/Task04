@@ -28,25 +28,25 @@ public class UserDAO {
         ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
     }
 
-    private final String SQL_SELECT_ALL = "select id, name, password, role, email " +
+    private final static String SQL_SELECT_ALL = "select id, name, password, role, email " +
                                             "from users";
 
-    private final String SQL_SELECT_BY_ID = "select id, name, password, role, email " +
+    private final static String SQL_SELECT_BY_ID = "select id, name, password, role, email " +
                                             "from users where id = :id";
 
-    private final String SQL_SELECT_BY_NAME = "select id, name, password, role, email " +
+    private final static String SQL_SELECT_BY_NAME = "select id, name, password, role, email " +
                                                 "from users where name = :name";
 
-    private final String SQL_SELECT_BY_EMAIL = "select id, name, password, role, email " +
+    private final static String SQL_SELECT_BY_EMAIL = "select id, name, password, role, email " +
                                                 "from users where email = :email";
 
-    private final String SQL_UPDATE_ROLE_BY_ID = "update users set role = :role where id = :id";
+    private final static String SQL_UPDATE_ROLE_BY_ID = "update users set role = :role where id = :id";
 
-    private final String SQL_UPDATE_ID = "update users set name = :name, password = :password, email = :email where id = :id";
+    private final static String SQL_UPDATE_ID = "update users set name = :name, password = :password, email = :email where id = :id";
 
-    private final String SQL_POST = "insert into users(name, password, role, email) values(:name, :password, :role, :email)";
+    private final static String SQL_POST = "insert into users(name, password, role, email) values(:name, :password, :role, :email)";
 
-    private final String SQL_DELETE_BY_ID = "delete from users where id = :id";
+    private final static String SQL_DELETE_BY_ID = "delete from users where id = :id";
 
     public List<User> getAll() {
         return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_ALL, ROW_MAPPER);

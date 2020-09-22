@@ -44,7 +44,7 @@ public class ProductMapper {
         );
     }
 
-    public List<ProductDTOResponse> allToModel(Page<Product> products) {
+    public List<ProductDTOResponse> allToModel(List<Product> products) {
         List<ProductDTOResponse> productDTOResponses = new ArrayList<>();
         for(Product product : products) {
             productDTOResponses.add(toModel(product));

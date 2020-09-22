@@ -29,36 +29,33 @@ public class OrderDAO {
         ROW_MAPPER = new BeanPropertyRowMapper<>(Order.class);
     }
 
-    private final String SQL_SELECT_ALL = "select id, status, submitted_by, submitted_at, updated_at " +
+    private final static String SQL_SELECT_ALL = "select id, status, submitted_by, submitted_at, updated_at " +
                                             "from orders";
 
-    private final String SQL_SELECT_BY_ORDER_ID = "select id, status, submitted_by, submitted_at, updated_at " +
+    private final static String SQL_SELECT_BY_ORDER_ID = "select id, status, submitted_by, submitted_at, updated_at " +
                                             "from orders where id = :id";
 
-    private final String SQL_SELECT_BY_USER_ID = "select id, status, submitted_by, submitted_at, updated_at " +
+    private final static String SQL_SELECT_BY_USER_ID = "select id, status, submitted_by, submitted_at, updated_at " +
                                                 "from orders where submitted_by = :submittedBy";
 
-    private final String SQL_INSERT = "insert into orders(status, submitted_by, submitted_at, updated_at) " +
+    private final static String SQL_INSERT = "insert into orders(status, submitted_by, submitted_at, updated_at) " +
                                         "values (:status, :submittedBy, :submittedAt, :updatedAt)";
 
-    private final String SQL_DELETE_BY_ORDER_ID = "delete from orders where id = :id";
+    private final static String SQL_DELETE_BY_ORDER_ID = "delete from orders where id = :id";
 
-    private final String SQL_UPDATE_STATUS_BY_ORDER_ID = "update orders set status = :status, updated_at = :updatedAt " +
+    private final static String SQL_UPDATE_STATUS_BY_ORDER_ID = "update orders set status = :status, updated_at = :updatedAt " +
                                                     "where id = :id";
 
     public List<Order> getAll(Pageable pageable) {
 
         String query = PaginationUtil.addPaging(SQL_SELECT_ALL, pageable);
 
-        Map<String, ?> parameterMap = Map.of("limit", pageable.getPageSize(), "offset", pageable.getOffset());
-
         try {
-
-            return NAMED_JDBC_TEMPLATE.query(query, parameterMap, ROW_MAPPER);
+            return NAMED_JDBC_TEMPLATE.query(query, ROW_MAPPER);
         } catch (BadSqlGrammarException e) {
             LOG.info(e.getMessage());
 
-            return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_ALL, parameterMap, ROW_MAPPER);
+            return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_ALL, ROW_MAPPER);
         }
     }
 

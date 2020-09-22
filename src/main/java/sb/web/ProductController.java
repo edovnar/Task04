@@ -1,7 +1,6 @@
 package sb.web;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sb.domain.dto.request.ProductDTORequest;
@@ -26,7 +25,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDTOResponse> getAll(@PageableDefault(sort = ("name")) Pageable pageable) {
+    public List<ProductDTOResponse> getAll(Pageable pageable) {
        return productMapper.allToModel(productService.getAll(pageable));
     }
 
