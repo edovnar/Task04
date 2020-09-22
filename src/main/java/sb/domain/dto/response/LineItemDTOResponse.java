@@ -1,12 +1,12 @@
-package sb.domain.dto;
+package sb.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class StockDTO {
+public class LineItemDTOResponse {
 
-    private String productName;
+    private ProductDTOResponse product;
     private int quantity;
 }

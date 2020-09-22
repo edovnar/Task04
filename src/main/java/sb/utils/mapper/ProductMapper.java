@@ -1,6 +1,5 @@
 package sb.utils.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import sb.domain.dto.request.ProductDTORequest;
@@ -24,7 +23,6 @@ public class ProductMapper {
         this.stockDAO = stockDAO;
     }
 
-
     public ProductDTOResponse toModel(Product product) {
 
         Integer supplierId = product.getSupplierId();
@@ -43,7 +41,6 @@ public class ProductMapper {
                 product.getName(),
                 supplierName,
                 stock.getQuantity()
-
         );
     }
 
@@ -56,7 +53,7 @@ public class ProductMapper {
         return productDTOResponses;
     }
 
-    public Product toEntity(ProductDTORequest productDTORequest) {
-        return new Product(productDTORequest.getName(), productDTORequest.getSupplierId());
+    public Product toEntity(Integer id, ProductDTORequest productDTORequest) {
+        return new Product(id, productDTORequest.getName(), productDTORequest.getSupplierId());
     }
 }

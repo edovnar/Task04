@@ -1,12 +1,11 @@
 package sb.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sb.domain.dto.request.UserDTORequest;
 import sb.domain.entity.User;
-import sb.persistence.dao.UserDAO;
 import sb.utils.mapper.UserMapper;
-import sb.domain.dto.UserDTO;
+import sb.domain.dto.response.UserDTOResponse;
 import sb.service.UserService;
 
 import javax.validation.Valid;
@@ -25,25 +24,26 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDTO> getAll() {
+    public List<UserDTOResponse> getAll() {
         return  userMapper.allToModel(userService.getAll());
     }
 
     @GetMapping("/{id}")
-    public UserDTO get(@PathVariable("id") int id) {
+    public UserDTOResponse get(@PathVariable("id") int id) {
         return userMapper.toModel(userService.get(id));
     }
 
     @PatchMapping("/{id}")
-    public UserDTO updateRole(@PathVariable("id") int id,
-                                @RequestBody UserDTO userDTO) {
+    public UserDTOResponse updateRole(@PathVariable("id") int id,
+                                      @RequestBody UserDTORequest userDTORequest) {
 
-        return userMapper.toModel(userService.updateRole(id, userDTO.getRole()));
+        return userMapper.toModel(userService.updateRole(id, userDTORequest.getRole()));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@RequestBody @Valid User user) {
+    public UserDTOResponse create(@RequestBody @Valid UserDTORequest userDTORequest) {
+        User user = userMapper.toEntity(null, userDTORequest);
         return userMapper.toModel(userService.create(user));
     }
 

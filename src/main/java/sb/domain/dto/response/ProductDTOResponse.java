@@ -9,7 +9,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDTOResponse {
 
-    private int id;
+    private Integer id;
     private String name;
     private String supplierName;
     private Integer stockQuantity;

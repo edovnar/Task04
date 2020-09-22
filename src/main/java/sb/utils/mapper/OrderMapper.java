@@ -1,8 +1,8 @@
 package sb.utils.mapper;
 
 import org.springframework.stereotype.Component;
-import sb.domain.dto.LineItemDTO;
-import sb.domain.dto.UserDTO;
+import sb.domain.dto.response.LineItemDTOResponse;
+import sb.domain.dto.response.UserDTOResponse;
 import sb.domain.entity.Order;
 import sb.domain.dto.response.OrderDTOResponse;
 import sb.persistence.dao.LineItemDAO;
@@ -26,22 +26,21 @@ public class OrderMapper {
         this.lineItemMapper = lineItemMapper;
     }
 
-
     public OrderDTOResponse toModel(Order order) {
 
-        List<LineItemDTO> lineItemDTOs = lineItemMapper.allToModel(
+        List<LineItemDTOResponse> lineItemDTOResponses = lineItemMapper.allToModel(
                 lineItemDAO.getByOrder(order.getId())
         );
 
-        UserDTO userDTO = userMapper.toModel(userService.get(order.getSubmittedBy()));
-        userDTO.setId(null);
+        UserDTOResponse userDTOResponse = userMapper.toModel(userService.get(order.getSubmittedBy()));
+        userDTOResponse.setId(null);
 
         return new OrderDTOResponse(
                 order.getId(),
                 order.getStatus(),
                 order.getSubmittedAt(),
-                userDTO,
-                lineItemDTOs
+                userDTOResponse,
+                lineItemDTOResponses
         );
     }
 

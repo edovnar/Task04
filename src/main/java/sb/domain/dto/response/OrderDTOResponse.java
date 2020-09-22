@@ -2,10 +2,7 @@ package sb.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sb.domain.dto.LineItemDTO;
-import sb.domain.dto.UserDTO;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -13,11 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDTOResponse {
 
-    private int id;
+    private Integer id;
     private String status;
     private Date submittedAt;
-    private UserDTO user;
-
-    @NotNull
-    private List<LineItemDTO> lineItemDTOs;
+    private UserDTOResponse user;
+    private List<LineItemDTOResponse> lineItemDTOResponses;
 }

@@ -2,7 +2,6 @@ package sb.persistence.dao;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,23 +9,23 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import sb.domain.entity.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class UserDAO {
 
-    private NamedParameterJdbcTemplate namedJdbcTemplate;
-    private BeanPropertyRowMapper<User> rowMapper;
+    private final NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE;
+    private final BeanPropertyRowMapper<User> ROW_MAPPER;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
-        this.namedJdbcTemplate = namedJdbcTemplate;
-        rowMapper = new BeanPropertyRowMapper<>(User.class);
+    public UserDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
+        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+        ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
     }
 
     private final String SQL_SELECT_ALL = "select id, name, password, role, email " +
@@ -50,38 +49,37 @@ public class UserDAO {
     private final String SQL_DELETE_BY_ID = "delete from users where id = :id";
 
     public List<User> getAll() {
-        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
+        return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_ALL, ROW_MAPPER);
     }
 
     public Optional<User> get(int id) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", id);
+        Map parameterMap = Map.of("id", id);
 
         User user = null;
         try {
-            user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
+            user = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_ID, parameterMap, ROW_MAPPER);
         } catch (EmptyResultDataAccessException ignored) {}
 
         return Optional.ofNullable(user);
     }
 
     public Optional<User> getByName(String name) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("name", name);
+        Map<String, String> parameterMap = Map.of("name", name);
+
         User user = null;
         try {
-            user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, map, rowMapper);
+            user = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_NAME, parameterMap, ROW_MAPPER);
         } catch (DataAccessException ignored) { }
 
         return Optional.ofNullable(user);
     }
 
     public Optional<User> getByEmail(String email) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("email", email);
+        Map<String, String> parameterMap = Map.of("email", email);
+
         User user = null;
         try {
-            user = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_EMAIL, map, rowMapper);
+            user = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_EMAIL, parameterMap, ROW_MAPPER);
         } catch (DataAccessException ignored){}
 
         return Optional.ofNullable(user);
@@ -91,7 +89,7 @@ public class UserDAO {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("role", role)
                 .addValue("id", id);
-        namedJdbcTemplate.update(SQL_UPDATE_ROLE_BY_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_ROLE_BY_ID, map);
     }
 
     public void update(User user) {
@@ -100,7 +98,7 @@ public class UserDAO {
                 .addValue("password", user.getPassword())
                 .addValue("email", user.getEmail())
                 .addValue("id", user.getId());
-        namedJdbcTemplate.update(SQL_UPDATE_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_ID, map);
     }
 
     public int post(User user) {
@@ -111,7 +109,7 @@ public class UserDAO {
                 .addValue("email", user.getEmail());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedJdbcTemplate.update(SQL_POST, map, keyHolder, new String[]{"id"});
+        NAMED_JDBC_TEMPLATE.update(SQL_POST, map, keyHolder, new String[]{"id"});
 
         return keyHolder.getKey().intValue();
     }
@@ -119,6 +117,6 @@ public class UserDAO {
     public void delete(int id) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
-        namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_ID, map);
     }
 }

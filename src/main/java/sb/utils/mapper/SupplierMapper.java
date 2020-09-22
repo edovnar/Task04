@@ -1,9 +1,9 @@
 package sb.utils.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sb.domain.dto.request.SupplierDTORequest;
 import sb.domain.entity.Supplier;
-import sb.domain.dto.SupplierDTO;
+import sb.domain.dto.response.SupplierDTOResponse;
 import sb.service.UserService;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class SupplierMapper {
         this.userService = userService;
     }
 
-    public SupplierDTO toModel(Supplier supplier) {
+    public SupplierDTOResponse toModel(Supplier supplier) {
         String supplierName = "";
         if(supplier.getUserId() != null) {
             supplierName = userService.get(supplier.getUserId()).getName();
@@ -26,7 +26,7 @@ public class SupplierMapper {
             supplierName = "Have no representative yet";
         }
 
-        return new SupplierDTO(
+        return new SupplierDTOResponse(
                 supplier.getId(),
                 supplierName,
                 supplier.getName(),
@@ -36,14 +36,27 @@ public class SupplierMapper {
         );
     }
 
-    public List<SupplierDTO> allToModel(List<Supplier> suppliers) {
+    public List<SupplierDTOResponse> allToModel(List<Supplier> suppliers) {
 
-        List<SupplierDTO> DTOs= new ArrayList<>();
+        List<SupplierDTOResponse> DTOs= new ArrayList<>();
 
         for (Supplier supplier : suppliers) {
             DTOs.add(toModel(supplier));
         }
 
         return DTOs;
+    }
+
+    public Supplier toEntity(Integer id, SupplierDTORequest supplierDTORequest) {
+        return new Supplier(
+                id,
+                supplierDTORequest.getUserId(),
+                supplierDTORequest.getName(),
+                supplierDTORequest.getAddress(),
+                supplierDTORequest.getPayerNumber(),
+                supplierDTORequest.getRegistrationCertificateNumber(),
+                supplierDTORequest.getRegistrationDate(),
+                supplierDTORequest.getPhoneNumber()
+        );
     }
 }

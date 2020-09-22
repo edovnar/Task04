@@ -2,9 +2,10 @@ package sb.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sb.domain.dto.request.SupplierDTORequest;
 import sb.domain.entity.Supplier;
 import sb.utils.mapper.SupplierMapper;
-import sb.domain.dto.SupplierDTO;
+import sb.domain.dto.response.SupplierDTOResponse;
 import sb.service.SupplierService;
 
 import javax.validation.Valid;
@@ -23,18 +24,19 @@ public class SupplierController {
     }
 
     @GetMapping
-    public List<SupplierDTO> getAll() {
+    public List<SupplierDTOResponse> getAll() {
         return supplierMapper.allToModel(supplierService.getAll());
     }
 
     @GetMapping("/{id}")
-    public SupplierDTO get(@PathVariable("id") int id) {
+    public SupplierDTOResponse get(@PathVariable("id") int id) {
         return supplierMapper.toModel(supplierService.get(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SupplierDTO create(@RequestBody @Valid Supplier supplier) {
+    public SupplierDTOResponse create(@RequestBody @Valid SupplierDTORequest supplierDTORequest) {
+        Supplier supplier = supplierMapper.toEntity(null, supplierDTORequest);
 
         return supplierMapper.toModel(supplierService.save(supplier));
     }
@@ -46,7 +48,8 @@ public class SupplierController {
     }
 
     @PutMapping("/{id}")
-    public SupplierDTO update(@PathVariable("id") int id, @RequestBody @Valid Supplier supplier) {
+    public SupplierDTOResponse update(@PathVariable("id") int id, @RequestBody @Valid SupplierDTORequest supplierDTORequest) {
+        Supplier supplier = supplierMapper.toEntity(null, supplierDTORequest);
 
         return supplierMapper.toModel(supplierService.update(id, supplier));
     }

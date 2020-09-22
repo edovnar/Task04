@@ -1,5 +1,6 @@
 package sb.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +25,6 @@ public class OrderService {
     private StockDAO stockDAO;
     private LineItemDAO lineItemDAO;
 
-
     public OrderService(OrderDAO orderDAO, UserDAO userDAO, ProductDAO productDAO, StockDAO stockDAO, LineItemDAO lineItemDAO) {
         this.orderDAO = orderDAO;
         this.userDAO = userDAO;
@@ -33,30 +33,23 @@ public class OrderService {
         this.lineItemDAO = lineItemDAO;
     }
 
-
-    public List<Order> getAll() {
+    public List<Order> getAll(Pageable pageable) {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = userDAO.getByName(context.getAuthentication().getName())
                 .orElseThrow(() -> new NotFoundException("User is not found"));
 
         if(user.getRole().equals("admin")) {
-            return orderDAO.getAll();
+            return orderDAO.getAll(pageable);
         } else {
-            return orderDAO.getByUser(user.getId());
+            return orderDAO.getByUserId(user.getId());
         }
     }
-
 
     public Order get(int id) {
         return orderDAO.get(id).orElseThrow(
                 () -> new NotFoundException("No such order")
         );
     }
-
-    public List<Order> getByUser(int id) {
-        return orderDAO.getByUser(id);
-    }
-
 
     @Transactional
     public Order create(OrderDTORequest orderDTORequest) {
@@ -65,16 +58,10 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("No such user")
         );
 
-        List<LineItem> lineItems = orderDTORequest.getLineItems();
-
-        Optional<Product> product;
-        Optional<Stock> stock;
-
-        int orderId = orderDAO.post(user);
+        int orderId = orderDAO.create(user);
 
         return save(orderId, orderDTORequest);
     }
-
 
     public Order updateStatus(String status, int orderId) {
 
@@ -90,7 +77,6 @@ public class OrderService {
 
         return orderDAO.get(orderId).get();
     }
-
 
     @Transactional
     public Order update(int orderId, OrderDTORequest orderDTORequest) {
@@ -118,7 +104,6 @@ public class OrderService {
         return save(orderId, orderDTORequest);
     }
 
-
     public void delete(int id) {
         orderDAO.get(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -131,9 +116,9 @@ public class OrderService {
         List<LineItem> lineItems = orderDTORequest.getLineItems();
 
         Optional<Product> product;
-        Optional<Stock> stock;
+        Stock stock;
 
-        List<LineItem> lineItemSet = new ArrayList<>();
+        List<LineItem> lineItemOrigin = new ArrayList<>();
 
         for(LineItem lineItem : lineItems) {
 
@@ -145,12 +130,12 @@ public class OrderService {
                 throw new BadOrderException(lineItem, "This product doesn't exists");
             }
 
-            stock = stockDAO.get(productId);
+            stock = stockDAO.get(productId).get();
 
             int productQuantity = lineItem.getQuantity();
-            int stockQuantity = stockDAO.get(lineItem.getProductId()).get().getQuantity();
+            int stockQuantity = stock.getQuantity();
 
-            if(productQuantity < 1 ){
+            if(productQuantity < 1) {
                 throw  new BadOrderException(lineItem, "Quantity should be positive");
             }
 
@@ -160,23 +145,24 @@ public class OrderService {
                 );
             }
 
-            stock.get().setQuantity(stockQuantity - productQuantity);
-            stockDAO.update(stock.get());
+            stock.setQuantity(stockQuantity - productQuantity);
+            stockDAO.update(stock);
 
-            if(!lineItemSet.contains(lineItem)) {
-                lineItemSet.add(lineItem);
+            if(!lineItemOrigin.contains(lineItem)) {
+                lineItemOrigin.add(lineItem);
 
                 lineItem.setOrderId(orderId);
-                lineItemDAO.post(lineItem);
+                lineItemDAO.create(lineItem);
             } else {
-                int index = lineItemSet.indexOf(lineItem);
+                int index = lineItemOrigin.indexOf(lineItem);
 
-                lineItemSet.get(index).setQuantity(
-                        lineItemSet.get(index).getQuantity() + lineItem.getQuantity()
+                lineItemOrigin.get(index).setQuantity(
+                        lineItemOrigin.get(index).getQuantity() + lineItem.getQuantity()
                 );
-                lineItemDAO.update(lineItemSet.get(index));
+                lineItemDAO.update(lineItemOrigin.get(index));
             }
         }
+
         return orderDAO.get(orderId).get();
     }
 }

@@ -2,7 +2,7 @@ package sb.domain.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sb.domain.dto.UserDTO;
+import sb.domain.dto.response.UserDTOResponse;
 import sb.domain.entity.LineItem;
 
 import javax.validation.constraints.NotNull;
@@ -13,11 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDTORequest {
 
-    private int id;
     private String status;
     private Date submittedAt;
-    private UserDTO user;
+    private UserDTOResponse user;
 
-    @NotNull
+    @NotNull(message = "Add products to the order")
     private List<LineItem> lineItems;
 }

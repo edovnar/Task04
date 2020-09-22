@@ -1,4 +1,4 @@
-package sb.domain.dto;
+package sb.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.sql.Date;
 
 @Data
 @AllArgsConstructor
-public class SupplierDTO {
+public class SupplierDTOResponse {
 
     private Integer id;
     private String userName;

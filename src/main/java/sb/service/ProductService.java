@@ -27,7 +27,6 @@ public class ProductService {
         this.supplierDAO = supplierDAO;
     }
 
-
     public Page<Product> getAll(Pageable pageable) {
         ListToPageConverter<Product> converter = new ListToPageConverter<>();
 

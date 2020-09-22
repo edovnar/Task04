@@ -3,94 +3,69 @@ package sb.persistence.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import sb.domain.entity.LineItem;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class LineItemDAO {
 
-    private NamedParameterJdbcTemplate namedJdbcTemplate;
-    private BeanPropertyRowMapper<LineItem> rowMapper;
+    private final NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE;
+    private final BeanPropertyRowMapper<LineItem> ROW_MAPPER;
 
-    public LineItemDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
-        this.namedJdbcTemplate = namedJdbcTemplate;
-        rowMapper = new BeanPropertyRowMapper<>(LineItem.class);
+    public LineItemDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
+        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+        ROW_MAPPER = new BeanPropertyRowMapper<>(LineItem.class);
     }
 
-    private final static String SQL_SELECT_BY_ORDERID_PRODUCTID = "select order_id, product_id, quantity " +
+    private final static String SQL_SELECT_BY_ORDER_ID_PRODUCT_ID = "select order_id, product_id, quantity " +
                                                                     "from lineitems " +
                                                                     "where order_id = :orderId and product_id = :productId";
 
-    private final static String SQL_SELECT_ALL = "select order_id, product_id, quantity " +
-                                                    "from lineitems";
-
-    private final static String SQL_SELECT_BY_ORDER = "select order_id, product_id, quantity " +
+    private final static String SQL_SELECT_BY_ORDER_ID = "select order_id, product_id, quantity " +
                                                         "from lineitems where order_id = :orderId";
 
-    private final static String SQL_SELECT_BY_PRODUCT = "select order_id, product_id, quantity " +
-                                                        "from lineitems where product_id = :productId";
-
-    private final static String SLQ_UPDATE = "update lineitems set quantity = :quantity " +
-                                                "where order_id = :orderId and product_id = :productId";
+    private final static String SQL_UPDATE_BY_ORDER_ID_PRODUCT_ID = "update lineitems set quantity = :quantity " +
+                                                                    "where order_id = :orderId and product_id = :productId";
 
     private final static String SQL_INSERT = "insert into lineitems(order_id, product_id, quantity) " +
                                                 "values(:orderId, :productId, :quantity)";
 
-    private final static String SQL_DELETE_BY_ID = "delete from lineitems where order_id = :id";
+    private final static String SQL_DELETE_BY_ORDER_ID = "delete from lineitems where order_id = :id";
 
     public LineItem get(int orderId, int productId){
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("orderId", orderId)
-                .addValue("productId", productId);
+        Map<String, Integer> parameterMap = Map.of("orderId", orderId, "productId", productId);
 
-        return namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ORDERID_PRODUCTID, map, rowMapper);
+        return NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_ORDER_ID_PRODUCT_ID, parameterMap, ROW_MAPPER);
     }
-
-    public List<LineItem> getAll() {
-        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
-    }
-
 
     public List<LineItem> getByOrder(int orderId) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("orderId", orderId);
+        Map<String, Integer> parameterMap = Map.of("orderId", orderId);
 
-        return namedJdbcTemplate.query(SQL_SELECT_BY_ORDER, map, rowMapper);
+        return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_BY_ORDER_ID, parameterMap, ROW_MAPPER);
     }
 
-    public List<LineItem> getByProduct(int productId) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("productId", productId);
-
-        return namedJdbcTemplate.query(SQL_SELECT_BY_PRODUCT, map, rowMapper);
-    }
-
-    public void post(LineItem lineItem) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+    public void create(LineItem lineItem) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("orderId", lineItem.getOrderId())
                 .addValue("productId", lineItem.getProductId())
                 .addValue("quantity", lineItem.getQuantity());
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedJdbcTemplate.update(SQL_INSERT, map, keyHolder, new String[]{"id"});
+        NAMED_JDBC_TEMPLATE.update(SQL_INSERT, mapSqlParameterSource);
     }
 
     public void update(LineItem lineItem) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("quantity", lineItem.getQuantity())
                 .addValue("orderId", lineItem.getOrderId())
                 .addValue("productId", lineItem.getProductId());
-
-        namedJdbcTemplate.update(SLQ_UPDATE,map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_ORDER_ID_PRODUCT_ID, mapSqlParameterSource);
     }
 
-    public void deleteByOrder(int id) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", id);
-        namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
+    public void deleteByOrder(int orderId) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+                .addValue("id", orderId);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_ORDER_ID, mapSqlParameterSource);
     }
 }

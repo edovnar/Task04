@@ -40,7 +40,7 @@ public class ProductController {
     public ProductDTOResponse create(@RequestBody @Valid ProductDTORequest productDTORequest){
 
         Product product = productService.save(
-                productMapper.toEntity(productDTORequest)
+                productMapper.toEntity(null, productDTORequest)
         );
 
         return productMapper.toModel(product);
@@ -54,7 +54,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ProductDTOResponse update(@PathVariable("id") int id, @RequestBody @Valid ProductDTORequest productDTORequest) {
-        Product product = productMapper.toEntity(productDTORequest);
+        Product product = productMapper.toEntity(id, productDTORequest);
 
         return productMapper.toModel(productService.update(id, product));
     }

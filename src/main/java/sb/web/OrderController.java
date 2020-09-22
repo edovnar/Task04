@@ -1,6 +1,6 @@
 package sb.web;
 
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +13,7 @@ import sb.utils.mapper.OrderMapper;
 import sb.domain.dto.response.OrderDTOResponse;
 import sb.service.OrderService;
 import sb.service.UserService;
-import sb.utils.OrderSort;
+import sb.utils.PaginationUtil;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,19 +25,19 @@ public class OrderController {
     private OrderService orderService;
     private UserService userService;
     private OrderMapper orderMapper;
-    private OrderSort orderSort;
+    private PaginationUtil paginationUtil;
 
-    public OrderController(OrderService orderService, UserService userService, OrderMapper orderMapper, OrderSort orderSort) {
+    public OrderController(OrderService orderService, UserService userService, OrderMapper orderMapper, PaginationUtil paginationUtil) {
         this.orderService = orderService;
         this.userService = userService;
         this.orderMapper = orderMapper;
-        this.orderSort = orderSort;
+        this.paginationUtil = paginationUtil;
     }
 
     @GetMapping
-    public List<OrderDTOResponse> getAll(@Param("status") String status, @Param("sortBy") String sortBy) {
-        List<OrderDTOResponse> orderDTOs = orderMapper.allToModel(orderService.getAll());
-        orderDTOs = orderSort.sort(sortBy, status, orderDTOs);
+    public List<OrderDTOResponse> getAll(Pageable pageable) {
+        List<OrderDTOResponse> orderDTOs = orderMapper.allToModel(orderService.getAll(pageable));
+
         return orderDTOs;
     }
 

@@ -1,23 +1,17 @@
 package sb.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
 
 @Data
-public class User extends BaseEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
 
-    @NotBlank(message = "Name must not be blank")
+    private Integer id;
     private String name;
-
-    @NotBlank(message = "Password must not be blank")
     private String password;
-
-    @NotBlank(message = "Role must not be blank")
     private String role;
-
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email must not be blank")
     private String email;
 }

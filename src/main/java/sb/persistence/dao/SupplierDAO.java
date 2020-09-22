@@ -11,55 +11,56 @@ import sb.domain.entity.Supplier;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class SupplierDAO {
 
 
-    private NamedParameterJdbcTemplate namedJdbcTemplate;
-    private BeanPropertyRowMapper<Supplier> rowMapper;
+    private final NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE;
+    private final BeanPropertyRowMapper<Supplier> ROW_MAPPER;
 
-    public SupplierDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
-        this.namedJdbcTemplate = namedJdbcTemplate;
-        rowMapper = new BeanPropertyRowMapper<>(Supplier.class);
+    public SupplierDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
+        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+        ROW_MAPPER = new BeanPropertyRowMapper<>(Supplier.class);
     }
 
     private final String SQL_SELECT_ALL = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
                                             "from suppliers ";
 
-    private final String SQL_SELECT_BY_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
-                                            "from suppliers where id = :id";
+    private final String SQL_SELECT_BY_SUPPLIER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                                    "from suppliers where id = :id";
 
-    private final String SQL_SELECT_BY_USERID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
-                                                "from suppliers where user_id = :userId";
+    private final String SQL_SELECT_BY_USER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                                    "from suppliers where user_id = :userId";
 
-    private final String SQL_SELECT_BY_NAME = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
-                                                "from suppliers where name = :name";
+    private final String SQL_SELECT_BY_SUPPLIER_NAME = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+                                                        "from suppliers where name = :name";
 
-    private final String SQL_UPDATE_BY_ID = "update suppliers set name = :name," +
-                                            "address = :address," +
-                                            "payer_number = :payerNumber, " +
-                                            "registration_certificate_number = :registrationCertificateNumber," +
-                                            "registration_date = :registrationDate," +
-                                            "phone_number = :phoneNumber, " +
-                                            "user_id = :userId where id = :id";
+    private final String SQL_UPDATE_BY_SUPPLIER_ID = "update suppliers set name = :name," +
+                                                    "address = :address," +
+                                                    "payer_number = :payerNumber, " +
+                                                    "registration_certificate_number = :registrationCertificateNumber," +
+                                                    "registration_date = :registrationDate," +
+                                                    "phone_number = :phoneNumber, " +
+                                                    "user_id = :userId where id = :id";
 
     private final String POST = "insert into suppliers(user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number) " +
-            "values(:userId, :name, :address, :payerNumber, :registrationCertificateNumber, :registrationDate, :phoneNumber)";
+                                "values(:userId, :name, :address, :payerNumber, :registrationCertificateNumber, :registrationDate, :phoneNumber)";
 
-    private final String SQL_DELETE_BY_ID = "delete from suppliers where id = :id";
+    private final String SQL_DELETE_BY_SUPPLIER_ID = "delete from suppliers where id = :id";
 
     public List<Supplier> getAll() {
-        return namedJdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
+        return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_ALL, ROW_MAPPER);
     }
 
-    public Optional<Supplier> get(int id) {
-            MapSqlParameterSource map = new MapSqlParameterSource()
-                    .addValue("id", id);
+    public Optional<Supplier> get(int supplierId) {
+            Map<String, Integer> parameterMap = Map.of("id", supplierId);
+
             Supplier supplier = null;
             try {
-                supplier = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_ID, map, rowMapper);
+                supplier = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_SUPPLIER_ID, parameterMap, ROW_MAPPER);
             } catch (DataAccessException ignored) {}
 
         return Optional.ofNullable(supplier);
@@ -69,15 +70,15 @@ public class SupplierDAO {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("userId", id);
 
-        return namedJdbcTemplate.query(SQL_SELECT_BY_USERID, map, rowMapper);
+        return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_BY_USER_ID, map, ROW_MAPPER);
     }
 
     public Optional<Supplier> getByName(String name) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("name", name);
+        Map<String, String> parameterMap = Map.of("name", name);
+
         Supplier supplier = null;
         try {
-            supplier = namedJdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, map, rowMapper);
+            supplier = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_SUPPLIER_NAME, parameterMap, ROW_MAPPER);
         } catch (DataAccessException ignored) {}
 
         return Optional.ofNullable(supplier);
@@ -93,7 +94,7 @@ public class SupplierDAO {
                 .addValue("phoneNumber", supplier.getPhoneNumber())
                 .addValue("registrationDate", new Date())
                 .addValue("registrationCertificateNumber", supplier.getRegistrationCertificateNumber());
-        namedJdbcTemplate.update(SQL_UPDATE_BY_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_SUPPLIER_ID, map);
     }
 
     public int post(Supplier supplier) {
@@ -106,7 +107,7 @@ public class SupplierDAO {
                 .addValue("registrationDate", new Date())
                 .addValue("registrationCertificateNumber", supplier.getRegistrationCertificateNumber());
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedJdbcTemplate.update(POST, map, keyHolder, new String[]{"id"});
+        NAMED_JDBC_TEMPLATE.update(POST, map, keyHolder, new String[]{"id"});
 
         return keyHolder.getKey().intValue();
     }
@@ -115,6 +116,6 @@ public class SupplierDAO {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        namedJdbcTemplate.update(SQL_DELETE_BY_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_SUPPLIER_ID, map);
     }
 }
