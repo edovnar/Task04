@@ -15,8 +15,8 @@ public class LineItemDAO {
     private final NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE;
     private final BeanPropertyRowMapper<LineItem> ROW_MAPPER;
 
-    public LineItemDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
-        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+    public LineItemDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
+        this.NAMED_JDBC_TEMPLATE = namedJdbcTemplate;
         ROW_MAPPER = new BeanPropertyRowMapper<>(LineItem.class);
     }
 
@@ -41,31 +41,31 @@ public class LineItemDAO {
         return NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_ORDER_ID_PRODUCT_ID, parameterMap, ROW_MAPPER);
     }
 
-    public List<LineItem> getByOrder(int orderId) {
+    public List<LineItem> getByOrderId(int orderId) {
         Map<String, Integer> parameterMap = Map.of("orderId", orderId);
 
         return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_BY_ORDER_ID, parameterMap, ROW_MAPPER);
     }
 
     public void create(LineItem lineItem) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("orderId", lineItem.getOrderId())
                 .addValue("productId", lineItem.getProductId())
                 .addValue("quantity", lineItem.getQuantity());
-        NAMED_JDBC_TEMPLATE.update(SQL_INSERT, mapSqlParameterSource);
+        NAMED_JDBC_TEMPLATE.update(SQL_INSERT, parameterMap);
     }
 
     public void update(LineItem lineItem) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("quantity", lineItem.getQuantity())
                 .addValue("orderId", lineItem.getOrderId())
                 .addValue("productId", lineItem.getProductId());
-        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_ORDER_ID_PRODUCT_ID, mapSqlParameterSource);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_ORDER_ID_PRODUCT_ID, parameterMap);
     }
 
     public void deleteByOrder(int orderId) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", orderId);
-        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_ORDER_ID, mapSqlParameterSource);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_ORDER_ID, parameterMap);
     }
 }

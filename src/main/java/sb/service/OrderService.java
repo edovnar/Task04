@@ -89,7 +89,7 @@ public class OrderService {
             throw new NotFoundException("Can't update shipped order");
         }
 
-        for (LineItem lineItem : lineItemDAO.getByOrder(orderId)) {
+        for (LineItem lineItem : lineItemDAO.getByOrderId(orderId)) {
 
             int productId = lineItem.getProductId();
             Stock stock = stockDAO.get(productId).get();

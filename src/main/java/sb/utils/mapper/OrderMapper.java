@@ -29,7 +29,7 @@ public class OrderMapper {
     public OrderDTOResponse toModel(Order order) {
 
         List<LineItemDTOResponse> lineItemDTOResponses = lineItemMapper.allToModel(
-                lineItemDAO.getByOrder(order.getId())
+                lineItemDAO.getByOrderId(order.getId())
         );
 
         UserDTOResponse userDTOResponse = userMapper.toModel(userService.get(order.getSubmittedBy()));
@@ -39,6 +39,7 @@ public class OrderMapper {
                 order.getId(),
                 order.getStatus(),
                 order.getSubmittedAt(),
+                order.getUpdatedAt(),
                 userDTOResponse,
                 lineItemDTOResponses
         );

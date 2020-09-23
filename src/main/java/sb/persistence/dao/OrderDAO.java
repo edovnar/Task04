@@ -24,8 +24,8 @@ public class OrderDAO {
     private final BeanPropertyRowMapper<Order> ROW_MAPPER;
     private final Logger LOG = LoggerFactory.getLogger(OrderDAO.class);
 
-    public OrderDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
-        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+    public OrderDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
+        this.NAMED_JDBC_TEMPLATE = namedJdbcTemplate;
         ROW_MAPPER = new BeanPropertyRowMapper<>(Order.class);
     }
 
@@ -66,8 +66,7 @@ public class OrderDAO {
         try {
             order = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_ORDER_ID, parameterMap, ROW_MAPPER);
         } catch (EmptyResultDataAccessException e) {
-            Logger log = LoggerFactory.getLogger(OrderDAO.class);
-            log.info(e.getMessage());
+            LOG.info(e.getMessage());
         }
 
         return Optional.ofNullable(order);
@@ -80,28 +79,28 @@ public class OrderDAO {
     }
 
     public void update(String status, int orderId) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("status", status)
                 .addValue("updatedAt", new Date())
                 .addValue("id", orderId);
-       NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_STATUS_BY_ORDER_ID, mapSqlParameterSource);
+       NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_STATUS_BY_ORDER_ID, parameterMap);
     }
 
     public int create(User user) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("status", "unshipped")
                 .addValue("submittedBy", user.getId())
                 .addValue("submittedAt", new Date())
                 .addValue("updatedAt", null);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        NAMED_JDBC_TEMPLATE.update(SQL_INSERT, mapSqlParameterSource, keyHolder, new String[] {"id"});
-        return keyHolder.getKey().intValue();
+        NAMED_JDBC_TEMPLATE.update(SQL_INSERT, parameterMap, keyHolder, new String[] {"id"});
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     public void delete(int id) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", id);
-       NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_ORDER_ID, mapSqlParameterSource);
+       NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_ORDER_ID, parameterMap);
     }
 }

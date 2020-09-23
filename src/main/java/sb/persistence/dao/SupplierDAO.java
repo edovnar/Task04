@@ -1,6 +1,9 @@
 package sb.persistence.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -9,33 +12,30 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import sb.domain.entity.Supplier;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class SupplierDAO {
 
-
     private final NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE;
     private final BeanPropertyRowMapper<Supplier> ROW_MAPPER;
+    private final Logger LOG = LoggerFactory.getLogger(SupplierDAO.class);
 
-    public SupplierDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
-        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+    public SupplierDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
+        this.NAMED_JDBC_TEMPLATE = namedJdbcTemplate;
         ROW_MAPPER = new BeanPropertyRowMapper<>(Supplier.class);
     }
 
-    private final static String SQL_SELECT_ALL = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_ALL = "select id, user_id, name, address, registration_date, phone_number " +
                                             "from suppliers ";
 
-    private final static String SQL_SELECT_BY_SUPPLIER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_BY_SUPPLIER_ID = "select id, user_id, name, address, registration_date, phone_number " +
                                                     "from suppliers where id = :id";
 
-    private final static String SQL_SELECT_BY_USER_ID = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_BY_USER_ID = "select id, user_id, name, address, registration_date, phone_number " +
                                                     "from suppliers where user_id = :userId";
 
-    private final static String SQL_SELECT_BY_SUPPLIER_NAME = "select id, user_id, name, address, payer_number, registration_certificate_number, registration_date, phone_number " +
+    private final static String SQL_SELECT_BY_SUPPLIER_NAME = "select id, user_id, name, address, registration_date, phone_number " +
                                                         "from suppliers where name = :name";
 
     private final static String SQL_UPDATE_BY_SUPPLIER_ID = "update suppliers set name = :name," +
@@ -61,31 +61,22 @@ public class SupplierDAO {
             Supplier supplier = null;
             try {
                 supplier = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_SUPPLIER_ID, parameterMap, ROW_MAPPER);
-            } catch (DataAccessException ignored) {}
+            } catch (EmptyResultDataAccessException e) {
+                LOG.info(e.getMessage());
+            }
 
         return Optional.ofNullable(supplier);
     }
 
-    public List<Supplier> getByUser(int id) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+    public List<Supplier> getByUserId(int id) {
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("userId", id);
 
-        return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_BY_USER_ID, map, ROW_MAPPER);
-    }
-
-    public Optional<Supplier> getByName(String name) {
-        Map<String, String> parameterMap = Map.of("name", name);
-
-        Supplier supplier = null;
-        try {
-            supplier = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_SUPPLIER_NAME, parameterMap, ROW_MAPPER);
-        } catch (DataAccessException ignored) {}
-
-        return Optional.ofNullable(supplier);
+        return NAMED_JDBC_TEMPLATE.query(SQL_SELECT_BY_USER_ID, parameterMap, ROW_MAPPER);
     }
 
     public void update(int id, Supplier supplier) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", id)
                 .addValue("name", supplier.getName())
                 .addValue("userId", supplier.getUserId())
@@ -94,11 +85,11 @@ public class SupplierDAO {
                 .addValue("phoneNumber", supplier.getPhoneNumber())
                 .addValue("registrationDate", new Date())
                 .addValue("registrationCertificateNumber", supplier.getRegistrationCertificateNumber());
-        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_SUPPLIER_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_SUPPLIER_ID, parameterMap);
     }
 
-    public int post(Supplier supplier) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+    public int create(Supplier supplier) {
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("name", supplier.getName())
                 .addValue("userId", supplier.getUserId())
                 .addValue("payerNumber", supplier.getPayerNumber())
@@ -107,15 +98,15 @@ public class SupplierDAO {
                 .addValue("registrationDate", new Date())
                 .addValue("registrationCertificateNumber", supplier.getRegistrationCertificateNumber());
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        NAMED_JDBC_TEMPLATE.update(POST, map, keyHolder, new String[]{"id"});
+        NAMED_JDBC_TEMPLATE.update(POST, parameterMap, keyHolder, new String[]{"id"});
 
-        return keyHolder.getKey().intValue();
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     public void delete(int id) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_SUPPLIER_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_SUPPLIER_ID, parameterMap);
     }
 }

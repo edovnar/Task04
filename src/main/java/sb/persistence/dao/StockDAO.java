@@ -17,9 +17,10 @@ import java.util.Optional;
 public class StockDAO {
     private final NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE;
     private final BeanPropertyRowMapper<Stock> ROW_MAPPER;
+    private final Logger LOG = LoggerFactory.getLogger(StockDAO.class);
 
-    public StockDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
-        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+    public StockDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
+        this.NAMED_JDBC_TEMPLATE = namedJdbcTemplate;
         ROW_MAPPER = new BeanPropertyRowMapper<>(Stock.class);
     }
 
@@ -40,35 +41,33 @@ public class StockDAO {
     public Optional<Stock> get(int stockId) {
         Map<String, Integer> parameterMap = Map.of("id", stockId);
 
-        Stock stock;
+        Stock stock = null;
         try {
             stock = NAMED_JDBC_TEMPLATE.queryForObject(SQL_SELECT_BY_STOCK_ID, parameterMap, ROW_MAPPER);
         } catch (EmptyResultDataAccessException e) {
-            Logger log = LoggerFactory.getLogger(StockDAO.class);
-            log.info("No stock with the id = " + stockId);
-            return Optional.empty();
+            LOG.info(e.getMessage());
         }
 
         return Optional.ofNullable(stock);
     }
 
     public void update(Stock stock) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("quantity", stock.getQuantity())
                 .addValue("id", stock.getId());
-        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_STOCK_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_STOCK_ID, parameterMap);
     }
 
-    public void post(Stock stock) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+    public void create(Stock stock) {
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("quantity", stock.getQuantity())
                 .addValue("id", stock.getId());
-        NAMED_JDBC_TEMPLATE.update(SQL_POST, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_POST, parameterMap);
     }
 
     public void delete(int stockId) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", stockId);
-        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_STOCK_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_STOCK_ID, parameterMap);
     }
 }

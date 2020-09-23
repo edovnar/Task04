@@ -2,7 +2,6 @@ package sb.persistence.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.BadSqlGrammarException;
@@ -17,6 +16,7 @@ import sb.utils.PaginationUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -25,8 +25,8 @@ public class ProductDAO {
     private final BeanPropertyRowMapper<Product> ROW_MAPPER;
     private final Logger LOG = LoggerFactory.getLogger(ProductDAO.class);
 
-    public ProductDAO(NamedParameterJdbcTemplate NAMED_JDBC_TEMPLATE) {
-        this.NAMED_JDBC_TEMPLATE = NAMED_JDBC_TEMPLATE;
+    public ProductDAO(NamedParameterJdbcTemplate namedJdbcTemplate) {
+        this.NAMED_JDBC_TEMPLATE = namedJdbcTemplate;
         ROW_MAPPER = new BeanPropertyRowMapper<>(Product.class);
     }
 
@@ -71,26 +71,26 @@ public class ProductDAO {
         }
     }
 
-    public int post(Product product) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+    public int create(Product product) {
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("supplierId", product.getSupplierId())
                 .addValue("name", product.getName());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        NAMED_JDBC_TEMPLATE.update(SQL_POST, map, keyHolder, new String[]{"id"});
-        return keyHolder.getKey().intValue();
+        NAMED_JDBC_TEMPLATE.update(SQL_POST, parameterMap, keyHolder, new String[]{"id"});
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     public void delete(int productId) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", productId);
-        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_PRODUCT_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_DELETE_BY_PRODUCT_ID, parameterMap);
     }
 
     public void update(int productId, Product product) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
+        MapSqlParameterSource parameterMap = new MapSqlParameterSource()
                 .addValue("id", productId)
                 .addValue("name", product.getName());
-        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_PRODUCT_ID, map);
+        NAMED_JDBC_TEMPLATE.update(SQL_UPDATE_BY_PRODUCT_ID, parameterMap);
     }
 }

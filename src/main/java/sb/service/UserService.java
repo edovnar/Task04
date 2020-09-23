@@ -64,7 +64,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (role.equals("admin") || role.equals("user")) {
-            userId = userDAO.post(user);
+            userId = userDAO.create(user);
         } else {
             throw new CreationException("Define the role");
         }

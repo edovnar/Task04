@@ -33,17 +33,12 @@ public class SupplierService {
         return supplierDAO.get(id).get();
     }
 
-    public Supplier getByName(String name) {
-        return supplierDAO.getByName(name)
-                .orElseThrow(() -> new NotFoundException("No such supplier"));
-    }
-
     public List<Supplier> getByUser(int id) {
-        return supplierDAO.getByUser(id);
+        return supplierDAO.getByUserId(id);
     }
 
     public Supplier save(Supplier supplier) {
-        int supplierId = supplierDAO.post(supplier);
+        int supplierId = supplierDAO.create(supplier);
 
         return supplierDAO.get(supplierId).get();
     }

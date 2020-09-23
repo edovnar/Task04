@@ -13,6 +13,7 @@ public class OrderDTOResponse {
     private Integer id;
     private String status;
     private Date submittedAt;
+    private Date updatedAt;
     private UserDTOResponse user;
     private List<LineItemDTOResponse> lineItemDTOResponses;
 }

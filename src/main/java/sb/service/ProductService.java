@@ -41,8 +41,8 @@ public class ProductService {
         supplierDAO.get(product.getSupplierId())
                 .orElseThrow(() -> new NotFoundException("No such supplier"));
 
-        int productId = productDAO.post(product);
-        stockDAO.post(new Stock(productId, 1));
+        int productId = productDAO.create(product);
+        stockDAO.create(new Stock(productId, 1));
 
         return productDAO.get(productId).get();
     }
