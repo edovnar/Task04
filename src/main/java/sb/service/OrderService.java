@@ -12,9 +12,7 @@ import sb.domain.entity.*;
 import sb.persistence.dao.*;
 import sb.service.exception.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -118,7 +116,7 @@ public class OrderService {
         Optional<Product> product;
         Stock stock;
 
-        List<LineItem> lineItemOrigin = new ArrayList<>();
+        Set<LineItem> lineItemSet = new HashSet<>();
 
         for(LineItem lineItem : lineItems) {
 
@@ -148,18 +146,18 @@ public class OrderService {
             stock.setQuantity(stockQuantity - productQuantity);
             stockDAO.update(stock);
 
-            if(!lineItemOrigin.contains(lineItem)) {
-                lineItemOrigin.add(lineItem);
-
+            if(lineItemSet.add(lineItem)) {
                 lineItem.setOrderId(orderId);
                 lineItemDAO.create(lineItem);
             } else {
-                int index = lineItemOrigin.indexOf(lineItem);
+                for(LineItem liSet : lineItemSet) {
+                    if (liSet.equals(lineItem)) {
+                        liSet.setQuantity(liSet.getQuantity() + lineItem.getQuantity());
 
-                lineItemOrigin.get(index).setQuantity(
-                        lineItemOrigin.get(index).getQuantity() + lineItem.getQuantity()
-                );
-                lineItemDAO.update(lineItemOrigin.get(index));
+                        lineItemDAO.update(liSet);
+                        break;
+                    }
+                }
             }
         }
 
