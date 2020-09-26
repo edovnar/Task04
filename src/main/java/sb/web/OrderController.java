@@ -25,13 +25,11 @@ public class OrderController {
     private OrderService orderService;
     private UserService userService;
     private OrderMapper orderMapper;
-    private PaginationUtil paginationUtil;
 
-    public OrderController(OrderService orderService, UserService userService, OrderMapper orderMapper, PaginationUtil paginationUtil) {
+    public OrderController(OrderService orderService, UserService userService, OrderMapper orderMapper) {
         this.orderService = orderService;
         this.userService = userService;
         this.orderMapper = orderMapper;
-        this.paginationUtil = paginationUtil;
     }
 
     @GetMapping
